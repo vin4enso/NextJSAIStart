@@ -1,0 +1,67 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "search": "Search",
+    "actions": "Actions",
+    "confirm": "Confirm",
+    "back": "Back"
+  },
+  "auth": {
+    "login": "Sign In",
+    "register": "Sign Up",
+    "logout": "Sign Out",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot password?",
+    "resetPassword": "Reset Password",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "profile": "Profile",
+    "administration": "Administration",
+    "users": "Users",
+    "roles": "Roles",
+    "permissions": "Permissions",
+    "admin": "Admin"
+  },
+  "user": {
+    "title": "Users",
+    "name": "Name",
+    "email": "Email",
+    "status": "Status",
+    "active": "Active",
+    "inactive": "Inactive",
+    "createdAt": "Created"
+  },
+  "role": {
+    "title": "Roles",
+    "name": "Name",
+    "description": "Description",
+    "system": "System"
+  },
+  "permission": {
+    "title": "Permissions",
+    "key": "Key",
+    "group": "Group"
+  },
+  "profile": {
+    "title": "Profile",
+    "editProfile": "Edit Profile",
+    "changePassword": "Change Password"
+  },
+  "errors": {
+    "required": "Required",
+    "invalidEmail": "Invalid email",
+    "unauthorized": "Unauthorized",
+    "forbidden": "Forbidden",
+    "notFound": "Not found",
+    "serverError": "Server error"
+  }
+}

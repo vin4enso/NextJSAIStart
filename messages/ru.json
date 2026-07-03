@@ -1,0 +1,67 @@
+{
+  "common": {
+    "loading": "Загрузка...",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "delete": "Удалить",
+    "edit": "Редактировать",
+    "create": "Создать",
+    "search": "Поиск",
+    "actions": "Действия",
+    "confirm": "Подтвердить",
+    "back": "Назад"
+  },
+  "auth": {
+    "login": "Вход",
+    "register": "Регистрация",
+    "logout": "Выйти",
+    "email": "Email",
+    "password": "Пароль",
+    "forgotPassword": "Забыли пароль?",
+    "resetPassword": "Сброс пароля",
+    "noAccount": "Нет аккаунта?",
+    "haveAccount": "Уже есть аккаунт?"
+  },
+  "nav": {
+    "dashboard": "Дашборд",
+    "profile": "Профиль",
+    "administration": "Администрирование",
+    "users": "Пользователи",
+    "roles": "Роли",
+    "permissions": "Разрешения",
+    "admin": "Админка"
+  },
+  "user": {
+    "title": "Пользователи",
+    "name": "Имя",
+    "email": "Email",
+    "status": "Статус",
+    "active": "Активен",
+    "inactive": "Неактивен",
+    "createdAt": "Создан"
+  },
+  "role": {
+    "title": "Роли",
+    "name": "Название",
+    "description": "Описание",
+    "system": "Системная"
+  },
+  "permission": {
+    "title": "Разрешения",
+    "key": "Ключ",
+    "group": "Группа"
+  },
+  "profile": {
+    "title": "Профиль",
+    "editProfile": "Редактировать профиль",
+    "changePassword": "Сменить пароль"
+  },
+  "errors": {
+    "required": "Обязательное поле",
+    "invalidEmail": "Неверный формат email",
+    "unauthorized": "Необходима авторизация",
+    "forbidden": "Доступ запрещён",
+    "notFound": "Не найдено",
+    "serverError": "Ошибка сервера"
+  }
+}
