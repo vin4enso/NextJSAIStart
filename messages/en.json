@@ -90,5 +90,21 @@
     "forbidden": "Forbidden",
     "notFound": "Not found",
     "serverError": "Server error"
+  },
+  "uiKit": {
+    "noData": "No data",
+    "noResults": "No results found",
+    "retry": "Retry",
+    "uploadAvatar": "Upload avatar",
+    "changeAvatar": "Change avatar",
+    "confirmDelete": "Confirm Deletion",
+    "deleteWarning": "Are you sure you want to delete {name}? This action cannot be undone.",
+    "rowsPerPage": "Rows per page",
+    "of": "of",
+    "previous": "Previous",
+    "next": "Next",
+    "searchPlaceholder": "Search...",
+    "delete": "Delete",
+    "cancel": "Cancel"
   }
 }

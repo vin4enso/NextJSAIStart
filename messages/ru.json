@@ -90,5 +90,21 @@
     "forbidden": "Доступ запрещён",
     "notFound": "Не найдено",
     "serverError": "Ошибка сервера"
+  },
+  "uiKit": {
+    "noData": "Нет данных",
+    "noResults": "Результаты не найдены",
+    "retry": "Повторить",
+    "uploadAvatar": "Загрузить аватар",
+    "changeAvatar": "Сменить аватар",
+    "confirmDelete": "Подтверждение удаления",
+    "deleteWarning": "Вы уверены, что хотите удалить {name}? Это действие нельзя отменить.",
+    "rowsPerPage": "Строк на странице",
+    "of": "из",
+    "previous": "Назад",
+    "next": "Вперёд",
+    "searchPlaceholder": "Поиск...",
+    "delete": "Удалить",
+    "cancel": "Отмена"
   }
 }
