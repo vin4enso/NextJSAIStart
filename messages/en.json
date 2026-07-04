@@ -65,7 +65,22 @@
     "status": "Status",
     "active": "Active",
     "inactive": "Inactive",
-    "createdAt": "Created"
+    "createdAt": "Created",
+    "description": "Manage system users",
+    "create": "Create User",
+    "edit": "Edit User",
+    "delete": "Delete User",
+    "deleteWarning": "Are you sure you want to delete {name}?",
+    "password": "Password",
+    "roles": "Roles",
+    "noRoles": "No roles assigned",
+    "memberSince": "Member since",
+    "createSuccess": "User created successfully",
+    "updateSuccess": "User updated successfully",
+    "deleteSuccess": "User deleted successfully",
+    "details": "User Details",
+    "editUser": "Edit User",
+    "createUser": "Create User"
   },
   "role": {
     "title": "Roles",
