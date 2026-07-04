@@ -70,13 +70,27 @@
   "role": {
     "title": "Roles",
     "name": "Name",
-    "description": "Description",
-    "system": "System"
+    "description": "Manage system roles",
+    "system": "System",
+    "create": "Create Role",
+    "edit": "Edit Role",
+    "delete": "Delete Role",
+    "deleteWarning": "Are you sure you want to delete {name}?",
+    "permissions": "Permissions",
+    "usersCount": "Users",
+    "permissionsCount": "Permissions",
+    "createSuccess": "Role created successfully",
+    "updateSuccess": "Role updated successfully",
+    "deleteSuccess": "Role deleted successfully"
   },
   "permission": {
     "title": "Permissions",
     "key": "Key",
-    "group": "Group"
+    "group": "Group",
+    "description": "View and manage permission assignments",
+    "assigned": "Assigned",
+    "notAssigned": "Not Assigned",
+    "noPermissions": "No permissions assigned"
   },
   "profile": {
     "title": "Profile",
