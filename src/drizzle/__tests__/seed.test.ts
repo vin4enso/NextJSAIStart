@@ -2,6 +2,7 @@ import { describe, it, expect, beforeAll } from "vitest";
 import { db } from "@/lib/db";
 import {
   users,
+  accounts,
   roles,
   permissions,
   rolePermissions,
@@ -83,6 +84,26 @@ describe("seed data", () => {
       .all();
 
     expect(assigned.length).toBe(allPermissions.length);
+  });
+
+  it("creates credential account for admin user", () => {
+    const admin = db
+      .select()
+      .from(users)
+      .where(eq(users.email, "system@example.com"))
+      .get()!;
+    const credentialAccount = db
+      .select()
+      .from(accounts)
+      .where(
+        and(
+          eq(accounts.userId, admin.id),
+          eq(accounts.providerId, "credential"),
+        ),
+      )
+      .get();
+    expect(credentialAccount).toBeDefined();
+    expect(credentialAccount!.password).toBeTruthy();
   });
 
   it("assigns System role to admin user", () => {

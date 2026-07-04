@@ -1,8 +1,9 @@
-import { randomUUID } from "node:crypto";
+import { randomUUID, scryptSync, randomBytes } from "node:crypto";
 import bcrypt from "bcryptjs";
 import { db } from "@/lib/db";
 import {
   users,
+  accounts,
   roles,
   permissions,
   rolePermissions,
@@ -36,6 +37,7 @@ async function main() {
   db.delete(rolePermissions).run();
   db.delete(permissions).run();
   db.delete(roles).run();
+  db.delete(accounts).run();
   db.delete(users).run();
 
   const now = new Date().toISOString();
@@ -113,6 +115,24 @@ async function main() {
     .run();
 
   console.log("Admin user created: system@example.com");
+
+  const salt = randomBytes(16);
+  const hash = scryptSync("System123!", salt, 64);
+  const betterAuthHash = `s2:${hash.toString("base64")}:${salt.toString("base64")}`;
+
+  db.insert(accounts)
+    .values({
+      id: randomUUID(),
+      userId: adminUserId,
+      accountId: adminUserId,
+      providerId: "credential",
+      password: betterAuthHash,
+      createdAt: now,
+      updatedAt: now,
+    })
+    .run();
+
+  console.log("Admin user credential account created");
 
   db.insert(userRoles)
     .values({
