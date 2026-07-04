@@ -1,1 +1,13 @@
-{ "version": "7", "dialect": "sqlite", "entries": [] }
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1783159574136,
+      "tag": "0000_unknown_molten_man",
+      "breakpoints": true
+    }
+  ]
+}
