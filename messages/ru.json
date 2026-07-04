@@ -85,13 +85,27 @@
   "role": {
     "title": "Роли",
     "name": "Название",
-    "description": "Описание",
-    "system": "Системная"
+    "description": "Управление ролями",
+    "system": "Системная",
+    "create": "Создать роль",
+    "edit": "Редактировать роль",
+    "delete": "Удалить роль",
+    "deleteWarning": "Вы уверены, что хотите удалить {name}?",
+    "permissions": "Разрешения",
+    "usersCount": "Пользователи",
+    "permissionsCount": "Разрешений",
+    "createSuccess": "Роль создана",
+    "updateSuccess": "Роль обновлена",
+    "deleteSuccess": "Роль удалена"
   },
   "permission": {
     "title": "Разрешения",
     "key": "Ключ",
-    "group": "Группа"
+    "group": "Группа",
+    "description": "Просмотр и управление назначениями разрешений",
+    "assigned": "Назначено",
+    "notAssigned": "Не назначено",
+    "noPermissions": "Разрешения не назначены"
   },
   "profile": {
     "title": "Профиль",
