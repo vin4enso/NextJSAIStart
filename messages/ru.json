@@ -107,10 +107,36 @@
     "notAssigned": "Не назначено",
     "noPermissions": "Разрешения не назначены"
   },
+  "dashboard": {
+    "title": "Дашборд",
+    "description": "С возвращением, {name}!",
+    "totalUsers": "Пользователей",
+    "activeUsers": "Активных",
+    "totalRoles": "Ролей",
+    "totalPermissions": "Разрешений",
+    "quickLinks": "Быстрые ссылки",
+    "manageUsers": "Управление пользователями",
+    "manageRoles": "Управление ролями",
+    "managePermissions": "Управление разрешениями"
+  },
   "profile": {
     "title": "Профиль",
+    "description": "Управление личной информацией",
     "editProfile": "Редактировать профиль",
-    "changePassword": "Сменить пароль"
+    "changePassword": "Сменить пароль",
+    "profileInfo": "Информация профиля",
+    "profileInfoDescription": "Обновите имя и аватар",
+    "account": "Аккаунт",
+    "accountDescription": "Информация об аккаунте",
+    "changePasswordDescription": "Обновите ваш пароль",
+    "currentPassword": "Текущий пароль",
+    "newPassword": "Новый пароль",
+    "confirmPassword": "Подтвердите пароль",
+    "avatar": "Аватар",
+    "memberSince": "На сайте с",
+    "updateSuccess": "Профиль обновлён",
+    "passwordChanged": "Пароль изменён",
+    "passwordMismatch": "Пароли не совпадают"
   },
   "errors": {
     "required": "Обязательное поле",

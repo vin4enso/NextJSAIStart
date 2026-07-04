@@ -107,10 +107,36 @@
     "notAssigned": "Not Assigned",
     "noPermissions": "No permissions assigned"
   },
+  "dashboard": {
+    "title": "Dashboard",
+    "description": "Welcome back, {name}!",
+    "totalUsers": "Total Users",
+    "activeUsers": "Active Users",
+    "totalRoles": "Roles",
+    "totalPermissions": "Permissions",
+    "quickLinks": "Quick Links",
+    "manageUsers": "Manage Users",
+    "manageRoles": "Manage Roles",
+    "managePermissions": "Manage Permissions"
+  },
   "profile": {
     "title": "Profile",
+    "description": "Manage your personal information",
     "editProfile": "Edit Profile",
-    "changePassword": "Change Password"
+    "profileInfo": "Profile Information",
+    "profileInfoDescription": "Update your name and avatar",
+    "account": "Account",
+    "accountDescription": "View your account information",
+    "changePassword": "Change Password",
+    "changePasswordDescription": "Update your password",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm Password",
+    "avatar": "Avatar",
+    "memberSince": "Member since",
+    "updateSuccess": "Profile updated successfully",
+    "passwordChanged": "Password changed successfully",
+    "passwordMismatch": "Passwords do not match"
   },
   "errors": {
     "required": "Required",
