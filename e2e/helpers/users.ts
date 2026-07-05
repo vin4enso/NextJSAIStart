@@ -27,12 +27,12 @@ export async function createUserViaApi(
 
 export async function fillUserForm(page: Page, data: Partial<CreateUserData>) {
   if (data.name) {
-    await page.getByLabel(/^name$/i).fill(data.name);
+    await page.getByLabel(/^(name|имя)$/i).fill(data.name);
   }
   if (data.email) {
     await page.getByLabel(/^email$/i).fill(data.email);
   }
   if (data.password) {
-    await page.getByLabel(/^password$/i).fill(data.password);
+    await page.getByLabel(/^(password|пароль)$/i).fill(data.password);
   }
 }

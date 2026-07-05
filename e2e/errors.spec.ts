@@ -5,7 +5,7 @@ test.describe("Error pages", () => {
     await page.goto("/403");
     await expect(page.getByText("403")).toBeVisible();
     await expect(
-      page.getByText(/do not have permission|нет доступа/i),
+      page.getByText(/доступ запрещён|do not have permission|forbidden/i),
     ).toBeVisible();
   });
 

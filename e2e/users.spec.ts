@@ -7,37 +7,35 @@ const NEW_USER = {
   password: "TestPass123!",
 };
 
+function actionsButton(row) {
+  return row.locator("button").last();
+}
+
 test.describe("Users CRUD", () => {
   test("table renders with seeded users", async ({ adminPage }) => {
     await adminPage.goto("/admin/users");
     await expect(
-      adminPage.getByRole("heading", { name: /users|пользователи/i }),
+      adminPage.getByRole("heading", { name: /пользователи|users/i }),
     ).toBeVisible();
-    // System Admin should be visible in the table
     await expect(adminPage.getByText("System Admin")).toBeVisible();
   });
 
   test("can create a user", async ({ adminPage }) => {
     await adminPage.goto("/admin/users");
 
-    // Click create button
     await adminPage
-      .getByRole("button", { name: /create user|создать/i })
+      .getByRole("button", { name: /создать пользователя|create user/i })
       .click();
 
-    // Fill form — wait for dialog to appear
     await adminPage.waitForSelector("role=dialog");
     await fillUserForm(adminPage, NEW_USER);
 
-    // Submit
-    await adminPage.getByRole("button", { name: /save|сохранить/i }).click();
+    await adminPage.getByRole("button", { name: /сохранить|save/i }).click();
 
-    // Verify user appears in table
     await expect(adminPage.getByText(NEW_USER.name)).toBeVisible();
   });
 
   test("can edit a user", async ({ adminPage }) => {
-    // Create user first via API
     const uniqueEmail = `e2e-edit-${Date.now()}@example.com`;
     await createUserViaApi(adminPage, {
       ...NEW_USER,
@@ -46,18 +44,18 @@ test.describe("Users CRUD", () => {
 
     await adminPage.goto("/admin/users");
 
-    // Open dropdown menu for the created user
     const userRow = adminPage.getByText(uniqueEmail).locator("xpath=../..");
-    await userRow.getByRole("button", { name: /more|open menu/i }).click();
-    await adminPage.getByRole("menuitem", { name: /edit/i }).click();
+    await actionsButton(userRow).click();
+    await adminPage
+      .getByRole("menuitem", { name: /редактировать|edit/i })
+      .click();
 
-    // Update name
     await adminPage.waitForSelector("role=dialog");
-    const nameInput = adminPage.getByLabel(/^name$/i);
+    const nameInput = adminPage.getByLabel(/^(name|имя)$/i);
     await nameInput.clear();
     await nameInput.fill("Updated User");
 
-    await adminPage.getByRole("button", { name: /save|сохранить/i }).click();
+    await adminPage.getByRole("button", { name: /сохранить|save/i }).click();
 
     await expect(adminPage.getByText("Updated User")).toBeVisible();
   });
@@ -72,11 +70,12 @@ test.describe("Users CRUD", () => {
     await adminPage.goto("/admin/users");
 
     const userRow = adminPage.getByText(uniqueEmail).locator("xpath=../..");
-    await userRow.getByRole("button", { name: /more|open menu/i }).click();
-    await adminPage.getByRole("menuitem", { name: /delete/i }).click();
+    await actionsButton(userRow).click();
+    await adminPage.getByRole("menuitem", { name: /удалить|delete/i }).click();
 
-    // Confirm deletion
-    await adminPage.getByRole("button", { name: /confirm/i }).click();
+    await adminPage
+      .getByRole("button", { name: /подтвердить|confirm/i })
+      .click();
 
     await expect(adminPage.getByText(uniqueEmail)).not.toBeVisible();
   });

@@ -23,9 +23,9 @@ export async function createRoleViaApi(
 
 export async function fillRoleForm(page: Page, data: Partial<CreateRoleData>) {
   if (data.name) {
-    await page.getByLabel(/^name$/i).fill(data.name);
+    await page.getByLabel(/^(name|название)$/i).fill(data.name);
   }
   if (data.description !== undefined) {
-    await page.getByLabel(/^description$/i).fill(data.description);
+    await page.getByLabel(/^(description|описание)$/i).fill(data.description);
   }
 }

@@ -4,47 +4,46 @@ test.describe("Profile", () => {
   test("loads profile page with user info", async ({ adminPage }) => {
     await adminPage.goto("/profile");
     await expect(
-      adminPage.getByRole("heading", { name: /profile/i }),
+      adminPage.getByRole("heading", { name: /профиль|profile/i }),
     ).toBeVisible();
 
-    const nameInput = adminPage.getByLabel(/^name$/i);
+    const nameInput = adminPage.getByLabel(/^(name|имя)$/i);
     await expect(nameInput).toHaveValue("System Admin");
     await expect(adminPage.getByText("system@example.com")).toBeVisible();
   });
 
   test("can update name", async ({ adminPage }) => {
     await adminPage.goto("/profile");
-    const nameInput = adminPage.getByLabel(/^name$/i);
+    const nameInput = adminPage.getByLabel(/^(name|имя)$/i);
     await nameInput.clear();
     await nameInput.fill("Updated Admin");
 
-    await adminPage.getByRole("button", { name: /save|сохранить/i }).click();
+    await adminPage.getByRole("button", { name: /сохранить|save/i }).click();
 
     await expect(
-      adminPage.getByText(/updated|обновлено|saved|сохранено/i),
+      adminPage.getByText(/обновлено|updated|сохранено|saved/i),
     ).toBeVisible();
   });
 
   test("can change password", async ({ adminPage }) => {
     await adminPage.goto("/profile");
 
-    // Fill change password form
     await adminPage
-      .getByLabel(/current password|текущий пароль/i)
+      .getByLabel(/текущий пароль|current password/i)
       .fill("System123!");
     await adminPage
-      .getByLabel(/^new password|новый пароль$/i)
+      .getByLabel(/^(new password|новый пароль)$/i)
       .fill("NewPass123!");
     await adminPage
       .getByLabel(/confirm password|подтвердите пароль/i)
       .fill("NewPass123!");
 
     await adminPage
-      .getByRole("button", { name: /change password|изменить пароль/i })
+      .getByRole("button", { name: /сменить пароль|change password/i })
       .click();
 
     await expect(
-      adminPage.getByText(/updated|обновлено|changed|изменен/i),
+      adminPage.getByText(/обновлено|изменен|updated|changed|изменён/i),
     ).toBeVisible();
   });
 });

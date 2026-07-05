@@ -11,7 +11,7 @@ test.describe("Search and Sort", () => {
 
     await adminPage.goto("/admin/users");
 
-    const searchInput = adminPage.getByPlaceholder(/search|поиск/i);
+    const searchInput = adminPage.getByPlaceholder(/поиск|search/i);
     await searchInput.fill(uniqueName);
 
     await expect(adminPage.getByText(uniqueName)).toBeVisible();
@@ -21,11 +21,11 @@ test.describe("Search and Sort", () => {
   test("clearing search resets results", async ({ adminPage }) => {
     await adminPage.goto("/admin/users");
 
-    const searchInput = adminPage.getByPlaceholder(/search|поиск/i);
+    const searchInput = adminPage.getByPlaceholder(/поиск|search/i);
     await searchInput.fill("NonexistentUserXYZ");
 
     await expect(
-      adminPage.getByText(/no results|нет результатов/i),
+      adminPage.getByText(/результаты не найдены|no results found/i),
     ).toBeVisible();
 
     await searchInput.clear();
