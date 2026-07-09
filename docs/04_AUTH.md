@@ -16,39 +16,39 @@ Better Auth handles:
 
 ```typescript
 // src/lib/auth.ts
-import { betterAuth } from 'better-auth'
-import { drizzleAdapter } from 'better-auth/adapters/drizzle'
-import { db } from '@/lib/db'
+import { betterAuth } from "better-auth";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { db } from "@/lib/db";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
-    provider: 'sqlite',
+    provider: "sqlite",
   }),
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: false,
   },
-})
+});
 ```
 
 ## Auth Routes (Better Auth handles these)
 
-| Route | Purpose |
-|-------|---------|
-| /api/auth/sign-in | Login |
-| /api/auth/sign-up | Registration |
-| /api/auth/sign-out | Logout |
-| /api/auth/forgot-password | Request reset |
-| /api/auth/reset-password | Reset password |
+| Route                     | Purpose        |
+| ------------------------- | -------------- |
+| /api/auth/sign-in         | Login          |
+| /api/auth/sign-up         | Registration   |
+| /api/auth/sign-out        | Logout         |
+| /api/auth/forgot-password | Request reset  |
+| /api/auth/reset-password  | Reset password |
 
 ## Application Auth Pages
 
-| Page | Route | Description |
-|------|-------|-------------|
-| Login | /login | Email + password form |
-| Register | /register | Email + password + name form |
+| Page            | Route            | Description                   |
+| --------------- | ---------------- | ----------------------------- |
+| Login           | /login           | Email + password form         |
+| Register        | /register        | Email + password + name form  |
 | Forgot Password | /forgot-password | Email input, sends reset link |
-| Reset Password | /reset-password | New password form with token |
+| Reset Password  | /reset-password  | New password form with token  |
 
 ## Registration
 
@@ -59,20 +59,46 @@ export const auth = betterAuth({
 ## Session
 
 - Better Auth manages sessions via HTTP-only cookies
-- Middleware checks session on protected routes
+- Proxy checks session on protected routes
 - Session is refreshed automatically by Better Auth
 
-## Middleware Protection
+## Route Protection (Proxy)
+
+Next.js 16 uses `proxy.ts` (renamed from `middleware.ts`). The proxy checks for a valid session cookie and redirects unauthenticated users to `/login`.
 
 ```typescript
-// src/middleware.ts
-export { auth as middleware } from '@/lib/auth'
+// src/proxy.ts
+import { NextRequest, NextResponse } from "next/server";
+import { getSessionCookie } from "better-auth/cookies";
+
+const publicRoutes = [
+  "/login",
+  "/register",
+  "/forgot-password",
+  "/reset-password",
+];
+
+export async function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  if (publicRoutes.includes(pathname)) {
+    return NextResponse.next();
+  }
+
+  const sessionCookie = getSessionCookie(request);
+
+  if (!sessionCookie) {
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("callbackUrl", pathname);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  return NextResponse.next();
+}
 
 export const config = {
-  matcher: [
-    '/((?!api/auth|_next/static|_next/image|favicon.ico|login|register|forgot-password|reset-password).*)',
-  ],
-}
+  matcher: ["/((?!api/auth|_next/static|_next/image|favicon.ico|$).*)"],
+};
 ```
 
 ## Password Recovery

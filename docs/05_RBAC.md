@@ -17,21 +17,21 @@ User ──< UserRole >── Role ──< RolePermission >── Permission
 
 String-based keys following `{entity}.{action}` convention:
 
-| Key | Description |
-|-----|-------------|
-| `users.read` | View user list and details |
-| `users.create` | Create new users |
-| `users.update` | Edit users |
-| `users.delete` | Soft-delete users |
-| `roles.read` | View role list and details |
-| `roles.create` | Create new roles |
-| `roles.update` | Edit roles |
-| `roles.delete` | Delete roles |
-| `permissions.read` | View permission list |
-| `permissions.update` | Assign permissions to roles |
-| `profile.update` | Edit own profile |
-| `password.change` | Change own password |
-| `admin.access` | Access admin section (sidebar visibility) |
+| Key                  | Description                               |
+| -------------------- | ----------------------------------------- |
+| `users.read`         | View user list and details                |
+| `users.create`       | Create new users                          |
+| `users.update`       | Edit users                                |
+| `users.delete`       | Soft-delete users                         |
+| `roles.read`         | View role list and details                |
+| `roles.create`       | Create new roles                          |
+| `roles.update`       | Edit roles                                |
+| `roles.delete`       | Delete roles                              |
+| `permissions.read`   | View permission list                      |
+| `permissions.update` | Assign permissions to roles               |
+| `profile.update`     | Edit own profile                          |
+| `password.change`    | Change own password                       |
+| `admin.access`       | Access admin section (sidebar visibility) |
 
 ## System Role
 
@@ -43,7 +43,7 @@ String-based keys following `{entity}.{action}` convention:
 ## Access Check Hierarchy
 
 ```
-1. Middleware
+1. Proxy (route guard)
    └─ Redirects unauthenticated users to /login
 
 2. Layout
@@ -60,32 +60,32 @@ String-based keys following `{entity}.{action}` convention:
 
 ```typescript
 // Check if user has a specific permission
-function hasPermission(user: User, permissionKey: string): boolean
+function hasPermission(user: User, permissionKey: string): boolean;
 
 // Check if user has System role
-function isSystemUser(user: User): boolean
+function isSystemUser(user: User): boolean;
 
 // Require permission (throws if missing)
-function requirePermission(user: User, permissionKey: string): void
+function requirePermission(user: User, permissionKey: string): void;
 
 // Get all permissions for a user (union of all role permissions)
-function getUserPermissions(user: User): string[]
+function getUserPermissions(user: User): string[];
 ```
 
 ## Admin Pages
 
-| Page | Required Permission |
-|------|-------------------|
-| /admin/users | users.read |
-| /admin/users/create | users.create |
-| /admin/users/[id]/edit | users.update |
-| /admin/users/[id]/delete | users.delete |
-| /admin/roles | roles.read |
-| /admin/roles/create | roles.create |
-| /admin/roles/[id]/edit | roles.update |
-| /admin/roles/[id]/delete | roles.delete |
-| /admin/permissions | permissions.read |
-| /admin/permissions/[id]/edit | permissions.update |
+| Page                         | Required Permission |
+| ---------------------------- | ------------------- |
+| /admin/users                 | users.read          |
+| /admin/users/create          | users.create        |
+| /admin/users/[id]/edit       | users.update        |
+| /admin/users/[id]/delete     | users.delete        |
+| /admin/roles                 | roles.read          |
+| /admin/roles/create          | roles.create        |
+| /admin/roles/[id]/edit       | roles.update        |
+| /admin/roles/[id]/delete     | roles.delete        |
+| /admin/permissions           | permissions.read    |
+| /admin/permissions/[id]/edit | permissions.update  |
 
 ## Permission Assignment
 
