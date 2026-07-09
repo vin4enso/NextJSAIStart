@@ -69,7 +69,7 @@ export function UserFormDialog({
       name: user?.name ?? "",
       email: user?.email ?? "",
       password: "",
-      isActive: user?.isActive ?? true,
+      isActive: user?.isActive != null ? Boolean(user.isActive) : true,
       roleIds: user?.roles.map((r) => r.id) ?? [],
     },
   });
@@ -95,7 +95,7 @@ export function UserFormDialog({
         name: user?.name ?? "",
         email: user?.email ?? "",
         password: "",
-        isActive: user?.isActive ?? true,
+        isActive: user?.isActive != null ? Boolean(user.isActive) : true,
         roleIds: user?.roles.map((r) => r.id) ?? [],
       });
     }

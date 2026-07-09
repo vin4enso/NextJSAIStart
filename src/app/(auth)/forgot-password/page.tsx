@@ -60,7 +60,7 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <Card>
+    <Card data-testid="forgot-password-form">
       <CardHeader className="text-center">
         <CardTitle>{t("forgotPassword")}</CardTitle>
         <CardDescription>{t("forgotPasswordDescription")}</CardDescription>
@@ -77,12 +77,25 @@ export default function ForgotPasswordPage() {
               onChange={(e) => setEmail(e.target.value)}
               required
               autoComplete="email"
+              data-testid="forgot-password-email"
             />
           </div>
-          {error && <p className="text-destructive text-sm">{error}</p>}
+          {error && (
+            <p
+              className="text-destructive text-sm"
+              data-testid="forgot-password-error"
+            >
+              {error}
+            </p>
+          )}
         </CardContent>
         <CardFooter className="flex-col gap-4">
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={loading}
+            data-testid="forgot-password-submit"
+          >
             {loading ? t("sending") : t("sendResetLink")}
           </Button>
           <Link

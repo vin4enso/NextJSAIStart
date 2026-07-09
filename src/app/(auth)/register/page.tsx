@@ -47,7 +47,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <Card>
+    <Card data-testid="register-form">
       <CardHeader className="text-center">
         <CardTitle>{t("register")}</CardTitle>
         <CardDescription>{t("registerDescription")}</CardDescription>
@@ -64,6 +64,7 @@ export default function RegisterPage() {
               onChange={(e) => setName(e.target.value)}
               required
               autoComplete="name"
+              data-testid="register-name"
             />
           </div>
           <div className="space-y-2">
@@ -76,6 +77,7 @@ export default function RegisterPage() {
               onChange={(e) => setEmail(e.target.value)}
               required
               autoComplete="email"
+              data-testid="register-email"
             />
           </div>
           <div className="space-y-2">
@@ -89,12 +91,25 @@ export default function RegisterPage() {
               required
               minLength={8}
               autoComplete="new-password"
+              data-testid="register-password"
             />
           </div>
-          {error && <p className="text-destructive text-sm">{error}</p>}
+          {error && (
+            <p
+              className="text-destructive text-sm"
+              data-testid="register-error"
+            >
+              {error}
+            </p>
+          )}
         </CardContent>
         <CardFooter className="flex-col gap-4">
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={loading}
+            data-testid="register-submit"
+          >
             {loading ? t("registering") : t("submitRegister")}
           </Button>
           <p className="text-muted-foreground text-sm">

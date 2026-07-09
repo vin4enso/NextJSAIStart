@@ -161,35 +161,40 @@ function SidebarContent({
           <DropdownMenuTrigger
             render={
               <button
+                data-testid="user-menu-trigger"
                 className={cn(
                   "hover:bg-accent flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
                   isCollapsed && "justify-center",
                 )}
-              />
+              >
+                <Avatar className="size-7">
+                  <AvatarImage src={user?.avatar ?? undefined} />
+                  <AvatarFallback className="text-xs">
+                    {user?.name?.charAt(0)?.toUpperCase() ?? "U"}
+                  </AvatarFallback>
+                </Avatar>
+                {!isCollapsed && (
+                  <div className="flex-1 truncate text-left">
+                    <p className="truncate text-sm font-medium">{user?.name}</p>
+                    <p className="text-muted-foreground truncate text-xs">
+                      {user?.email}
+                    </p>
+                  </div>
+                )}
+              </button>
             }
-          >
-            <Avatar className="size-7">
-              <AvatarImage src={user?.avatar ?? undefined} />
-              <AvatarFallback className="text-xs">
-                {user?.name?.charAt(0)?.toUpperCase() ?? "U"}
-              </AvatarFallback>
-            </Avatar>
-            {!isCollapsed && (
-              <div className="flex-1 truncate text-left">
-                <p className="truncate text-sm font-medium">{user?.name}</p>
-                <p className="text-muted-foreground truncate text-xs">
-                  {user?.email}
-                </p>
-              </div>
-            )}
-          </DropdownMenuTrigger>
+          />
           <DropdownMenuContent align="end" side="right" className="w-48">
-            <DropdownMenuItem render={<Link href="/profile" />}>
+            <DropdownMenuItem
+              data-testid="profile-link"
+              render={<Link href="/profile" />}
+            >
               <User className="mr-2 size-4" />
               {t("nav.profile")}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
+              data-testid="sign-out"
               onClick={handleSignOut}
               className="text-destructive"
             >

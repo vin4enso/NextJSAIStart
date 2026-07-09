@@ -116,9 +116,14 @@ async function main() {
 
   console.log("Admin user created: system@example.com");
 
-  const salt = randomBytes(16);
-  const hash = scryptSync("System123!", salt, 64);
-  const betterAuthHash = `s2:${hash.toString("base64")}:${salt.toString("base64")}`;
+  const salt = randomBytes(16).toString("hex");
+  const hash = scryptSync("System123!", salt, 64, {
+    N: 16384,
+    r: 16,
+    p: 1,
+    maxmem: 128 * 16384 * 16 * 2,
+  });
+  const betterAuthHash = `${salt}:${hash.toString("hex")}`;
 
   db.insert(accounts)
     .values({

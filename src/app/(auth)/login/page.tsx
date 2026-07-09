@@ -45,7 +45,7 @@ export default function LoginPage() {
   };
 
   return (
-    <Card>
+    <Card data-testid="login-form">
       <CardHeader className="text-center">
         <CardTitle>{t("login")}</CardTitle>
         <CardDescription>{t("loginDescription")}</CardDescription>
@@ -62,6 +62,7 @@ export default function LoginPage() {
               onChange={(e) => setEmail(e.target.value)}
               required
               autoComplete="email"
+              data-testid="login-email"
             />
           </div>
           <div className="space-y-2">
@@ -81,12 +82,22 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
               autoComplete="current-password"
+              data-testid="login-password"
             />
           </div>
-          {error && <p className="text-destructive text-sm">{error}</p>}
+          {error && (
+            <p className="text-destructive text-sm" data-testid="login-error">
+              {error}
+            </p>
+          )}
         </CardContent>
         <CardFooter className="flex-col gap-4">
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={loading}
+            data-testid="login-submit"
+          >
             {loading ? t("loggingIn") : t("submitLogin")}
           </Button>
           <p className="text-muted-foreground text-sm">
