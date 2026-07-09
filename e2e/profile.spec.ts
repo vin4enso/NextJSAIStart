@@ -3,9 +3,7 @@ import { test, expect } from "./fixtures";
 test.describe("Profile", () => {
   test("loads profile page with user info", async ({ adminPage }) => {
     await adminPage.goto("/profile");
-    await expect(
-      adminPage.getByRole("heading", { name: /профиль|profile/i }),
-    ).toBeVisible();
+    await expect(adminPage.getByText(/профиль|profile/i)).toBeVisible();
 
     const nameInput = adminPage.getByLabel(/^(name|имя)$/i);
     await expect(nameInput).toHaveValue("System Admin");

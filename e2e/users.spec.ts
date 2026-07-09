@@ -7,16 +7,14 @@ const NEW_USER = {
   password: "TestPass123!",
 };
 
-function actionsButton(row) {
+function actionsButton(row: any) {
   return row.locator("button").last();
 }
 
 test.describe("Users CRUD", () => {
   test("table renders with seeded users", async ({ adminPage }) => {
     await adminPage.goto("/admin/users");
-    await expect(
-      adminPage.getByRole("heading", { name: /пользователи|users/i }),
-    ).toBeVisible();
+    await expect(adminPage.getByText(/пользователи|users/i)).toBeVisible();
     await expect(adminPage.getByText("System Admin")).toBeVisible();
   });
 

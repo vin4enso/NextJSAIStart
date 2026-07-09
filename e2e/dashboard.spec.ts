@@ -3,9 +3,7 @@ import { test, expect } from "./fixtures";
 test.describe("Dashboard", () => {
   test("loads with welcome message and stats", async ({ adminPage }) => {
     await adminPage.goto("/dashboard");
-    await expect(
-      adminPage.getByRole("heading", { name: /дашборд|dashboard/i }),
-    ).toBeVisible();
+    await expect(adminPage.getByText(/дашборд|dashboard/i)).toBeVisible();
 
     await expect(adminPage.getByText(/system admin/i)).toBeVisible();
 

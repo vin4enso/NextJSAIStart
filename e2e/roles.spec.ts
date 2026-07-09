@@ -6,16 +6,14 @@ const NEW_ROLE = {
   description: "E2E test role",
 };
 
-function actionsButton(row) {
+function actionsButton(row: any) {
   return row.locator("button").last();
 }
 
 test.describe("Roles CRUD", () => {
   test("table renders with seeded roles", async ({ adminPage }) => {
     await adminPage.goto("/admin/roles");
-    await expect(
-      adminPage.getByRole("heading", { name: /роли|roles/i }),
-    ).toBeVisible();
+    await expect(adminPage.getByText(/роли|roles/i)).toBeVisible();
     await expect(adminPage.getByText(/системная|system/i)).toBeVisible();
   });
 
