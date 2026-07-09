@@ -3,7 +3,7 @@
 ## Styling
 
 - **Tailwind CSS v4** for all styling
-- **shadcn/ui** components (customized, no Radix UI primitives)
+- **shadcn/ui** components (base-nova style, using **@base-ui/react** instead of Radix UI)
 - **lucide-react** for icons
 - Single light theme (no dark mode)
 
