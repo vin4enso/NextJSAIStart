@@ -146,6 +146,11 @@
     "notFound": "Не найдено",
     "serverError": "Ошибка сервера"
   },
+  "language": "Язык",
+  "lang": {
+    "ru": "Русский",
+    "en": "English"
+  },
   "uiKit": {
     "noData": "Нет данных",
     "noResults": "Результаты не найдены",

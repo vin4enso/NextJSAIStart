@@ -146,6 +146,11 @@
     "notFound": "Not found",
     "serverError": "Server error"
   },
+  "language": "Language",
+  "lang": {
+    "ru": "Russian",
+    "en": "English"
+  },
   "uiKit": {
     "noData": "No data",
     "noResults": "No results found",

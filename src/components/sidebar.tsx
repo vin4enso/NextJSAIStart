@@ -13,9 +13,11 @@ import {
   ChevronRight,
   LogOut,
   Menu,
+  Languages,
 } from "lucide-react";
-import { useState } from "react";
-import { menu, type MenuItem } from "@/config/menu";
+import { useState, useEffect, useRef } from "react";
+import { menu, filterMenuByPermissions, type MenuItem } from "@/config/menu";
+import { getCurrentUserPermissions } from "@/lib/actions";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
@@ -48,14 +50,20 @@ function SidebarItem({
   item,
   isCollapsed,
   onNavigate,
+  permissions = [],
 }: {
   item: MenuItem;
   isCollapsed: boolean;
   onNavigate?: () => void;
+  permissions?: string[];
 }) {
   const pathname = usePathname();
   const t = useTranslations();
   const [expanded, setExpanded] = useState(false);
+
+  if (item.permission && !permissions.includes(item.permission)) {
+    return null;
+  }
   const Icon = item.icon ? iconMap[item.icon] : null;
   const hasChildren = !!(item.children && item.children.length > 0);
   const isActive = item.href
@@ -92,6 +100,7 @@ function SidebarItem({
                 item={child}
                 isCollapsed={false}
                 onNavigate={onNavigate}
+                permissions={permissions}
               />
             ))}
           </div>
@@ -118,20 +127,55 @@ function SidebarItem({
   );
 }
 
-function SidebarContent({
+export function SidebarContent({
   isCollapsed,
   onNavigate,
+  permissions: propPermissions,
 }: {
   isCollapsed: boolean;
   onNavigate?: () => void;
+  permissions?: string[];
 }) {
   const { user } = useCurrentUser();
   const router = useRouter();
   const t = useTranslations();
+  const [fetchedPermissions, setFetchedPermissions] = useState<
+    string[] | undefined
+  >(undefined);
+  const [locale, setLocale] = useState(() => {
+    if (typeof document !== "undefined") {
+      const match = document.cookie.match(/(?:^|;\s*)locale=([^;]*)/);
+      return match?.[1] ?? "ru";
+    }
+    return "ru";
+  });
+  const initialPermissionsRef = useRef(propPermissions);
+
+  useEffect(() => {
+    if (initialPermissionsRef.current === undefined) {
+      getCurrentUserPermissions()
+        .then(setFetchedPermissions)
+        .catch(() => {});
+    }
+  }, []);
+
+  const effectivePermissions =
+    propPermissions !== undefined ? propPermissions : fetchedPermissions;
+  const filteredMenu =
+    effectivePermissions !== undefined
+      ? filterMenuByPermissions(menu, effectivePermissions)
+      : menu;
 
   const handleSignOut = async () => {
     await authClient.signOut();
     router.push("/login");
+  };
+
+  const handleToggleLocale = () => {
+    const newLocale = locale === "ru" ? "en" : "ru";
+    document.cookie = `locale=${newLocale}; path=/; max-age=${365 * 24 * 60 * 60}`;
+    setLocale(newLocale);
+    window.location.reload();
   };
 
   return (
@@ -146,15 +190,36 @@ function SidebarContent({
       </div>
 
       <nav className="flex-1 space-y-1 px-2">
-        {menu.map((item) => (
+        {filteredMenu.map((item) => (
           <SidebarItem
             key={item.title}
             item={item}
             isCollapsed={isCollapsed}
             onNavigate={onNavigate}
+            permissions={effectivePermissions}
           />
         ))}
       </nav>
+
+      <div className="border-t p-2">
+        <button
+          onClick={handleToggleLocale}
+          className={cn(
+            "hover:bg-accent flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
+            isCollapsed && "justify-center",
+          )}
+        >
+          <Languages className="size-4 shrink-0" />
+          {!isCollapsed && (
+            <span className="flex-1 text-left">{t("language")}</span>
+          )}
+          {!isCollapsed && (
+            <span className="text-muted-foreground text-xs">
+              {locale === "ru" ? "RU" : "EN"}
+            </span>
+          )}
+        </button>
+      </div>
 
       <div className="border-t p-2">
         <DropdownMenu>
