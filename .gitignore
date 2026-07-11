@@ -16,3 +16,4 @@ playwright-report/
 .idea/
 .claude/
 .playwright-cli/
+.worktrees
