@@ -1,34 +1,16 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, useTransition } from "react";
-import { useTranslations } from "next-intl";
-import { MoreHorizontal, Plus } from "lucide-react";
-import type { ColumnDef } from "@tanstack/react-table";
+import { Plus } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { PageHeader } from "@/components/page-header";
 import { AppTable } from "@/components/app-table";
 import { ConfirmDelete } from "@/components/confirm-delete";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { roleApi } from "@/api/role.api";
 import { RoleFormDialog } from "./_components/role-form-dialog";
-
-interface RoleRow {
-  id: string;
-  name: string;
-  description: string | null;
-  isSystem: boolean;
-  userCount: number;
-  permissionCount: number;
-  createdAt: string;
-  updatedAt: string;
-}
+import { createRoleColumns, type RoleRow } from "./_components/columns";
 
 export default function RolesPage() {
   const t = useTranslations("role");
@@ -112,86 +94,7 @@ export default function RolesPage() {
     fetchRoles();
   }, [fetchRoles]);
 
-  const columns: ColumnDef<RoleRow>[] = [
-    {
-      accessorKey: "name",
-      header: t("name"),
-      cell: ({ row }) => (
-        <a
-          href={`/roles/${row.original.id}`}
-          className="font-medium hover:underline"
-        >
-          {row.original.name}
-        </a>
-      ),
-    },
-    {
-      accessorKey: "description",
-      header: t("description"),
-      cell: ({ row }) => (
-        <span className="text-muted-foreground text-sm">
-          {row.original.description ?? "—"}
-        </span>
-      ),
-    },
-    {
-      accessorKey: "userCount",
-      header: t("usersCount"),
-      cell: ({ row }) => (
-        <span className="text-muted-foreground text-sm">
-          {row.original.userCount}
-        </span>
-      ),
-    },
-    {
-      accessorKey: "permissionCount",
-      header: t("permissionsCount"),
-      cell: ({ row }) => (
-        <span className="text-muted-foreground text-sm">
-          {row.original.permissionCount}
-        </span>
-      ),
-    },
-    {
-      accessorKey: "isSystem",
-      header: t("system"),
-      cell: ({ row }) => {
-        const system = row.original.isSystem;
-        return system ? (
-          <Badge variant="secondary">{t("system")}</Badge>
-        ) : (
-          <span className="text-muted-foreground text-xs">—</span>
-        );
-      },
-    },
-    {
-      id: "actions",
-      cell: ({ row }) => {
-        const role = row.original;
-        return (
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <Button variant="ghost" size="icon-sm">
-                <MoreHorizontal className="size-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => handleEdit(role)}>
-                {tCommon("edit")}
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                variant="destructive"
-                disabled={role.isSystem}
-                onClick={() => setDeleteTarget(role)}
-              >
-                {tCommon("delete")}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        );
-      },
-    },
-  ];
+  const columns = createRoleColumns(t, tCommon, handleEdit, setDeleteTarget);
 
   const pageMeta = {
     title: t("title"),
