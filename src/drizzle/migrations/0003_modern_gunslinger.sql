@@ -1,0 +1,1 @@
+ALTER TABLE `roles` ADD `deleted_at` text;

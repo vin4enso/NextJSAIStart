@@ -6,7 +6,7 @@ import {
   userRoles,
   permissions,
 } from "@/drizzle/schema";
-import { count, eq } from "drizzle-orm";
+import { count, eq, and, isNull } from "drizzle-orm";
 import type { CreateRoleDTO, UpdateRoleDTO } from "@/schemas/role";
 
 export const roleService = {
@@ -21,6 +21,7 @@ export const roleService = {
         updatedAt: roles.updatedAt,
       })
       .from(roles)
+      .where(isNull(roles.deletedAt))
       .all();
 
     const result = allRoles.map((role) => ({
@@ -60,7 +61,7 @@ export const roleService = {
         updatedAt: roles.updatedAt,
       })
       .from(roles)
-      .where(eq(roles.id, id))
+      .where(and(eq(roles.id, id), isNull(roles.deletedAt)))
       .all();
 
     if (!role) return null;
@@ -153,7 +154,10 @@ export const roleService = {
     if (!role) return false;
     if (role.isSystem) return false;
 
-    db.delete(roles).where(eq(roles.id, id)).run();
+    db.update(roles)
+      .set({ deletedAt: new Date().toISOString() })
+      .where(eq(roles.id, id))
+      .run();
     return true;
   },
 };
