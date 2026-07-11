@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import bcrypt from "bcryptjs";
 import { db } from "@/lib/db";
 import { users, userRoles } from "@/drizzle/schema";
 import { asc, count, desc, eq, like, or } from "drizzle-orm";
@@ -102,7 +103,7 @@ export const userService = {
         id,
         name: data.name,
         email: data.email,
-        passwordHash: data.password,
+        passwordHash: bcrypt.hashSync(data.password, 10),
         isActive: data.isActive,
         createdAt: now,
         updatedAt: now,
