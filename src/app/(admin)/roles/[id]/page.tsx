@@ -66,7 +66,7 @@ export default async function RoleDetailPage({ params }: RoleDetailPageProps) {
         title={role.name}
         breadcrumbs={[
           { label: tNav("dashboard"), href: "/dashboard" },
-          { label: t("title"), href: "/roles" },
+          { label: t("title"), href: "/admin/roles" },
           { label: role.name },
         ]}
       />
