@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import {
   users,
   accounts,
+  sessions,
   roles,
   permissions,
   rolePermissions,
@@ -33,6 +34,7 @@ const PERMISSION_DEFINITIONS = [
 async function main() {
   console.log("Seeding database...");
 
+  db.delete(sessions).run();
   db.delete(userRoles).run();
   db.delete(rolePermissions).run();
   db.delete(permissions).run();
@@ -148,6 +150,7 @@ async function main() {
 
   console.log("Admin user assigned System role");
   console.log("Database seeded successfully!");
+  console.log("Existing sessions cleared. Please re-login.");
 }
 
 export { main };
