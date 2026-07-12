@@ -26,7 +26,7 @@ async function checkAdminAccess() {
       rolePermissions,
       eq(rolePermissions.permissionId, permissions.id),
     )
-    .innerJoin(userRoles, eq(userRoles.userId, rolePermissions.roleId))
+    .innerJoin(userRoles, eq(userRoles.roleId, rolePermissions.roleId))
     .where(
       and(eq(userRoles.userId, userId), eq(permissions.key, "admin.access")),
     )

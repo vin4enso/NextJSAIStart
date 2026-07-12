@@ -20,6 +20,12 @@ export async function isSystemUser(userId: string): Promise<boolean> {
 }
 
 export async function getUserPermissionKeys(userId: string): Promise<string[]> {
+  const isSystem = await isSystemUser(userId);
+  if (isSystem) {
+    const result = await db.select({ key: permissions.key }).from(permissions);
+    return result.map((r) => r.key);
+  }
+
   const result = await db
     .select({ key: permissions.key })
     .from(permissions)
