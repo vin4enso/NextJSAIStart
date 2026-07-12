@@ -9,6 +9,8 @@ import {
   permissions,
   rolePermissions,
   userRoles,
+  pages,
+  sections,
 } from "@/drizzle/schema";
 
 const PERMISSION_DEFINITIONS = [
@@ -29,6 +31,14 @@ const PERMISSION_DEFINITIONS = [
   { key: "profile.update", name: "Update profile", group: "profile" },
   { key: "password.change", name: "Change password", group: "profile" },
   { key: "admin.access", name: "Access admin", group: "admin" },
+  { key: "pages.read", name: "View pages", group: "pages" },
+  { key: "pages.create", name: "Create pages", group: "pages" },
+  { key: "pages.update", name: "Update pages", group: "pages" },
+  { key: "pages.delete", name: "Delete pages", group: "pages" },
+  { key: "sections.read", name: "View sections", group: "sections" },
+  { key: "sections.create", name: "Create sections", group: "sections" },
+  { key: "sections.update", name: "Update sections", group: "sections" },
+  { key: "sections.delete", name: "Delete sections", group: "sections" },
 ] as const;
 
 async function main() {
@@ -41,6 +51,8 @@ async function main() {
   db.delete(roles).run();
   db.delete(accounts).run();
   db.delete(users).run();
+  db.delete(pages).run();
+  db.delete(sections).run();
 
   const now = new Date().toISOString();
 
@@ -149,6 +161,61 @@ async function main() {
     .run();
 
   console.log("Admin user assigned System role");
+
+  const homePageId = randomUUID();
+  db.insert(pages)
+    .values({
+      id: homePageId,
+      sectionId: null,
+      title: "Home",
+      slug: "home",
+      content:
+        "<h2>Welcome!</h2><p>This is your home page. Edit it in the admin panel.</p>",
+      isPublished: true,
+      isHome: true,
+      publishedAt: now,
+      createdAt: now,
+      updatedAt: now,
+    })
+    .run();
+
+  console.log("Home page created");
+
+  const sampleSectionId = randomUUID();
+  db.insert(sections)
+    .values({
+      id: sampleSectionId,
+      name: "About",
+      slug: "about",
+      description: "About us",
+      content: "<h2>About Us</h2><p>Sample about page content.</p>",
+      isPublished: true,
+      sortOrder: 0,
+      createdAt: now,
+      updatedAt: now,
+    })
+    .run();
+
+  console.log("Sample section created");
+
+  const samplePageId = randomUUID();
+  db.insert(pages)
+    .values({
+      id: samplePageId,
+      sectionId: sampleSectionId,
+      title: "Team",
+      slug: "team",
+      content: "<h3>Our Team</h3><p>Meet the team page content.</p>",
+      isPublished: true,
+      isHome: false,
+      publishedAt: now,
+      createdAt: now,
+      updatedAt: now,
+    })
+    .run();
+
+  console.log("Sample page created");
+
   console.log("Database seeded successfully!");
   console.log("Existing sessions cleared. Please re-login.");
 }

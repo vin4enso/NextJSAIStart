@@ -33,6 +33,18 @@ export const menu: MenuItem[] = [
       { title: "nav.users", href: "/admin/users", icon: "Users" },
       { title: "nav.roles", href: "/admin/roles", icon: "Shield" },
       { title: "nav.permissions", href: "/admin/permissions", icon: "Key" },
+      {
+        title: "nav.sections",
+        href: "/admin/sections",
+        icon: "FolderTree",
+        permission: "sections.read",
+      },
+      {
+        title: "nav.pages",
+        href: "/admin/pages",
+        icon: "FileText",
+        permission: "pages.read",
+      },
     ],
   },
 ];

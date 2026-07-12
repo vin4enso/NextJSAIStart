@@ -171,6 +171,59 @@ export const rolePermissionsRelations = relations(
   }),
 );
 
+export const sections = sqliteTable("sections", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  slug: text("slug").unique().notNull(),
+  description: text("description"),
+  content: text("content"),
+  metaTitle: text("meta_title"),
+  metaDescription: text("meta_description"),
+  sortOrder: integer("sort_order").default(0).notNull(),
+  isPublished: integer("is_published", { mode: "boolean" })
+    .default(true)
+    .notNull(),
+  createdAt: text("created_at")
+    .notNull()
+    .$defaultFn(() => new Date().toISOString()),
+  updatedAt: text("updated_at")
+    .notNull()
+    .$defaultFn(() => new Date().toISOString()),
+});
+
+export const pages = sqliteTable("pages", {
+  id: text("id").primaryKey(),
+  sectionId: text("section_id").references(() => sections.id),
+  title: text("title").notNull(),
+  slug: text("slug").notNull(),
+  content: text("content"),
+  metaTitle: text("meta_title"),
+  metaDescription: text("meta_description"),
+  isPublished: integer("is_published", { mode: "boolean" })
+    .default(false)
+    .notNull(),
+  isHome: integer("is_home", { mode: "boolean" }).default(false).notNull(),
+  publishedAt: text("published_at"),
+  createdAt: text("created_at")
+    .notNull()
+    .$defaultFn(() => new Date().toISOString()),
+  updatedAt: text("updated_at")
+    .notNull()
+    .$defaultFn(() => new Date().toISOString()),
+  deletedAt: text("deleted_at"),
+});
+
+export const sectionsRelations = relations(sections, ({ many }) => ({
+  pages: many(pages),
+}));
+
+export const pagesRelations = relations(pages, ({ one }) => ({
+  section: one(sections, {
+    fields: [pages.sectionId],
+    references: [sections.id],
+  }),
+}));
+
 export const sessionsRelations = relations(sessions, ({ one }) => ({
   user: one(users, {
     fields: [sessions.userId],

@@ -10,6 +10,8 @@
     "actions": "Действия",
     "confirm": "Подтвердить",
     "back": "Назад",
+    "yes": "Да",
+    "no": "Нет",
     "updateError": "Ошибка при обновлении"
   },
   "auth": {
@@ -50,6 +52,50 @@
       "invalidTokenDescription": "Ссылка для сброса недействительна или истекла. Запросите новую."
     }
   },
+  "section": {
+    "title": "Разделы",
+    "name": "Название",
+    "slug": "Slug",
+    "description": "Управление разделами сайта",
+    "create": "Создать раздел",
+    "edit": "Редактировать раздел",
+    "delete": "Удалить раздел",
+    "deleteWarning": "Вы уверены, что хотите удалить раздел \"{name}\"?",
+    "deleteBlocked": "Нельзя удалить раздел с существующими страницами",
+    "createSuccess": "Раздел создан",
+    "updateSuccess": "Раздел обновлён",
+    "deleteSuccess": "Раздел удалён",
+    "sortOrder": "Порядок",
+    "pagesCount": "Страниц",
+    "isPublished": "Опубликован",
+    "metaTitle": "Meta Title",
+    "metaDescription": "Meta Description",
+    "content": "Содержание"
+  },
+  "page": {
+    "title": "Страницы",
+    "name": "Название",
+    "slug": "Slug",
+    "description": "Управление страницами сайта",
+    "create": "Создать страницу",
+    "edit": "Редактировать страницу",
+    "delete": "Удалить страницу",
+    "deleteWarning": "Вы уверены, что хотите удалить \"{name}\"?",
+    "deleteHomeBlocked": "Главную страницу нельзя удалить",
+    "createSuccess": "Страница создана",
+    "updateSuccess": "Страница обновлена",
+    "deleteSuccess": "Страница удалена",
+    "section": "Раздел",
+    "root": "Корень сайта",
+    "isPublished": "Опубликована",
+    "isHome": "Главная",
+    "home": "Главная",
+    "metaTitle": "Meta Title",
+    "metaDescription": "Meta Description",
+    "content": "Содержание",
+    "publishedAt": "Опубликована",
+    "generateSlug": "Сгенерировать"
+  },
   "nav": {
     "dashboard": "Дашборд",
     "profile": "Профиль",
@@ -57,6 +103,8 @@
     "users": "Пользователи",
     "roles": "Роли",
     "permissions": "Разрешения",
+    "pages": "Страницы",
+    "sections": "Разделы",
     "admin": "Админка",
     "email": "Email"
   },

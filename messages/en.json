@@ -10,6 +10,8 @@
     "actions": "Actions",
     "confirm": "Confirm",
     "back": "Back",
+    "yes": "Yes",
+    "no": "No",
     "updateError": "Failed to update"
   },
   "auth": {
@@ -50,6 +52,50 @@
       "invalidTokenDescription": "This reset link is invalid or has expired. Please request a new one."
     }
   },
+  "section": {
+    "title": "Sections",
+    "name": "Name",
+    "slug": "Slug",
+    "description": "Manage site sections",
+    "create": "Create Section",
+    "edit": "Edit Section",
+    "delete": "Delete Section",
+    "deleteWarning": "Are you sure you want to delete \"{name}\"?",
+    "deleteBlocked": "Cannot delete a section with existing pages",
+    "createSuccess": "Section created",
+    "updateSuccess": "Section updated",
+    "deleteSuccess": "Section deleted",
+    "sortOrder": "Sort Order",
+    "pagesCount": "Pages",
+    "isPublished": "Published",
+    "metaTitle": "Meta Title",
+    "metaDescription": "Meta Description",
+    "content": "Content"
+  },
+  "page": {
+    "title": "Pages",
+    "name": "Title",
+    "slug": "Slug",
+    "description": "Manage site pages",
+    "create": "Create Page",
+    "edit": "Edit Page",
+    "delete": "Delete Page",
+    "deleteWarning": "Are you sure you want to delete \"{name}\"?",
+    "deleteHomeBlocked": "Cannot delete the home page",
+    "createSuccess": "Page created",
+    "updateSuccess": "Page updated",
+    "deleteSuccess": "Page deleted",
+    "section": "Section",
+    "root": "Root",
+    "isPublished": "Published",
+    "isHome": "Home",
+    "home": "Home",
+    "metaTitle": "Meta Title",
+    "metaDescription": "Meta Description",
+    "content": "Content",
+    "publishedAt": "Published",
+    "generateSlug": "Generate"
+  },
   "nav": {
     "dashboard": "Dashboard",
     "profile": "Profile",
@@ -57,6 +103,8 @@
     "users": "Users",
     "roles": "Roles",
     "permissions": "Permissions",
+    "pages": "Pages",
+    "sections": "Sections",
     "admin": "Admin",
     "email": "Email"
   },
