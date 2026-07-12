@@ -57,6 +57,7 @@ export default function UsersPage() {
   const [isError, setIsError] = useState(false);
   const searchRef = useRef(search);
   const pageRef = useRef(1);
+  const fetchedRef = useRef(false);
   const [deleteTarget, setDeleteTarget] = useState<UserRow | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -86,30 +87,11 @@ export default function UsersPage() {
   );
 
   useEffect(() => {
-    const cancelled = { current: false };
-    userApi
-      .list({ page: 1, pageSize: 20 })
-      .then((result) => {
-        if (!cancelled.current) {
-          startTransition(() => {
-            setUsers(result.items);
-            setPagination(result.pagination);
-            setIsLoading(false);
-          });
-        }
-      })
-      .catch(() => {
-        if (!cancelled.current) {
-          startTransition(() => {
-            setIsError(true);
-            setIsLoading(false);
-          });
-        }
-      });
-    return () => {
-      cancelled.current = true;
-    };
-  }, [startTransition]);
+    if (!fetchedRef.current) {
+      fetchedRef.current = true;
+      fetchUsers(1, "");
+    }
+  }, [fetchUsers]);
 
   const handleSearchChange = useCallback(
     (value: string) => {

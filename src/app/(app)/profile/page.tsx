@@ -1,8 +1,11 @@
 "use client";
 
-import { useCallback, useState, useTransition } from "react";
+import { useCallback, useState } from "react";
 import { useTranslations } from "next-intl";
-import { toast } from "sonner";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Loader2 } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { AvatarUpload } from "@/components/avatar-upload";
 import {
@@ -15,9 +18,17 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { AppForm } from "@/components/app-form";
 import { useCurrentUser } from "@/hooks/use-current-user";
+import { useFormMutation } from "@/hooks/use-form-mutation";
 import { profileApi } from "@/api/profile.api";
 import { Skeleton } from "@/components/ui/skeleton";
+
+const profileSchema = z.object({
+  name: z.string().min(1, "Name is required").max(100),
+});
+
+type ProfileForm = z.infer<typeof profileSchema>;
 
 export default function ProfilePage() {
   const t = useTranslations("profile");
@@ -26,67 +37,65 @@ export default function ProfilePage() {
 
   const { user, isLoading: userLoading } = useCurrentUser();
 
-  const [name, setName] = useState("");
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
-  const [isUpdatingProfile, startUpdateProfile] = useTransition();
+
+  const form = useForm<ProfileForm>({
+    resolver: zodResolver(profileSchema),
+    values: {
+      name: user?.name ?? "",
+    },
+  });
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [isChangingPassword, startChangePassword] = useTransition();
+
+  const { mutate: updateProfile, isPending: isUpdating } = useFormMutation({
+    mutationFn: async () => {
+      let avatarUrl: string | undefined;
+
+      if (avatarFile) {
+        const { url } = await profileApi.uploadAvatar(avatarFile);
+        avatarUrl = url;
+      }
+
+      const data = form.getValues();
+      return profileApi.update({
+        name: data.name.trim(),
+        ...(avatarUrl ? { avatar: avatarUrl } : {}),
+      });
+    },
+    onSuccess: () => setAvatarFile(null),
+    successMessage: t("updateSuccess"),
+    errorMessage: tCommon("updateError"),
+  });
+
+  const { mutate: changePassword, isPending: isChanging } = useFormMutation({
+    mutationFn: async () => {
+      if (!currentPassword || !newPassword || !confirmPassword) {
+        throw new Error(t("passwordMismatch"));
+      }
+      if (newPassword !== confirmPassword) {
+        throw new Error(t("passwordMismatch"));
+      }
+      return profileApi.changePassword({
+        currentPassword,
+        newPassword,
+        confirmPassword,
+      });
+    },
+    onSuccess: () => {
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+    },
+    successMessage: t("passwordChanged"),
+    errorMessage: tCommon("updateError"),
+  });
 
   const handleAvatarSelect = useCallback((file: File) => {
     setAvatarFile(file);
   }, []);
-
-  const handleUpdateProfile = useCallback(() => {
-    if (!name.trim()) return;
-    startUpdateProfile(async () => {
-      try {
-        let avatarUrl: string | undefined;
-
-        if (avatarFile) {
-          const { url } = await profileApi.uploadAvatar(avatarFile);
-          avatarUrl = url;
-        }
-
-        await profileApi.update({
-          name: name.trim(),
-          ...(avatarUrl ? { avatar: avatarUrl } : {}),
-        });
-
-        setAvatarFile(null);
-        toast.success(t("updateSuccess"));
-      } catch {
-        toast.error(tCommon("loading"));
-      }
-    });
-  }, [name, avatarFile, t, tCommon]);
-
-  const handleChangePassword = useCallback(() => {
-    if (!currentPassword || !newPassword || !confirmPassword) return;
-    if (newPassword !== confirmPassword) {
-      toast.error(t("passwordMismatch"));
-      return;
-    }
-
-    startChangePassword(async () => {
-      try {
-        await profileApi.changePassword({
-          currentPassword,
-          newPassword,
-          confirmPassword,
-        });
-
-        setCurrentPassword("");
-        setNewPassword("");
-        setConfirmPassword("");
-        toast.success(t("passwordChanged"));
-      } catch {
-        toast.error(tCommon("loading"));
-      }
-    });
-  }, [currentPassword, newPassword, confirmPassword, t, tCommon]);
 
   if (userLoading) {
     return (
@@ -136,29 +145,37 @@ export default function ProfilePage() {
             <CardTitle>{t("profileInfo")}</CardTitle>
             <CardDescription>{t("profileInfoDescription")}</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center gap-4">
-              <AvatarUpload
-                src={avatarFile ? URL.createObjectURL(avatarFile) : user.avatar}
-                name={user.name}
-                onFileSelect={handleAvatarSelect}
-              />
-              <div>
-                <p className="text-sm font-medium">{user.name}</p>
-                <p className="text-muted-foreground text-xs">{t("avatar")}</p>
+          <CardContent>
+            <AppForm onSubmit={form.handleSubmit(() => updateProfile())}>
+              <div className="flex items-center gap-4">
+                <AvatarUpload
+                  src={
+                    avatarFile ? URL.createObjectURL(avatarFile) : user.avatar
+                  }
+                  name={user.name}
+                  onFileSelect={handleAvatarSelect}
+                />
+                <div>
+                  <p className="text-sm font-medium">{user.name}</p>
+                  <p className="text-muted-foreground text-xs">{t("avatar")}</p>
+                </div>
               </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="name">{t("editProfile")}</Label>
-              <Input
-                id="name"
-                defaultValue={user.name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </div>
-            <Button onClick={handleUpdateProfile} disabled={isUpdatingProfile}>
-              {isUpdatingProfile ? tCommon("loading") : tCommon("save")}
-            </Button>
+              <div className="space-y-2">
+                <Label htmlFor="name">{t("editProfile")}</Label>
+                <Input id="name" {...form.register("name")} />
+                {form.formState.errors.name && (
+                  <p className="text-destructive text-xs">
+                    {form.formState.errors.name.message}
+                  </p>
+                )}
+              </div>
+              <Button type="submit" disabled={isUpdating}>
+                {isUpdating ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : null}
+                {isUpdating ? tCommon("loading") : tCommon("save")}
+              </Button>
+            </AppForm>
           </CardContent>
         </Card>
 
@@ -216,11 +233,9 @@ export default function ProfilePage() {
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
             </div>
-            <Button
-              onClick={handleChangePassword}
-              disabled={isChangingPassword}
-            >
-              {isChangingPassword ? tCommon("loading") : t("changePassword")}
+            <Button onClick={changePassword} disabled={isChanging}>
+              {isChanging ? <Loader2 className="size-4 animate-spin" /> : null}
+              {isChanging ? tCommon("loading") : t("changePassword")}
             </Button>
           </CardContent>
         </Card>

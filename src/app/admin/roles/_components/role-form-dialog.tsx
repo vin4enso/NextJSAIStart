@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -17,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AppForm } from "@/components/app-form";
+import { useFormMutation } from "@/hooks/use-form-mutation";
 import { roleApi } from "@/api/role.api";
 import { permissionApi } from "@/api/permission.api";
 
@@ -60,7 +62,6 @@ export function RoleFormDialog({
     Record<string, PermissionItem[]>
   >({});
   const [loadingPerms, setLoadingPerms] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
   const hasFetched = useRef(false);
 
   const form = useForm<FormValues>({
@@ -95,6 +96,30 @@ export function RoleFormDialog({
     }
   }, [open, role, form]);
 
+  const { mutate: submitForm, isPending: submitting } = useFormMutation({
+    mutationFn: async () => {
+      const data = form.getValues();
+      if (isEdit && role) {
+        return roleApi.update(role.id, {
+          name: data.name,
+          description: data.description || undefined,
+          permissionIds: data.permissionIds,
+        });
+      } else {
+        return roleApi.create({
+          name: data.name,
+          description: data.description || undefined,
+          permissionIds: data.permissionIds,
+        });
+      }
+    },
+    onSuccess: () => {
+      onSuccess();
+      onOpenChange(false);
+    },
+    successMessage: isEdit ? t("updateSuccess") : t("createSuccess"),
+  });
+
   const togglePermission = useCallback(
     (permissionId: string) => {
       const current = form.getValues("permissionIds");
@@ -110,45 +135,13 @@ export function RoleFormDialog({
     [form],
   );
 
-  const onSubmit = useCallback(
-    async (data: FormValues) => {
-      setSubmitting(true);
-      try {
-        if (isEdit && role) {
-          await roleApi.update(role.id, {
-            name: data.name,
-            description: data.description || undefined,
-            permissionIds: data.permissionIds,
-          });
-          toast.success(t("updateSuccess"));
-        } else {
-          await roleApi.create({
-            name: data.name,
-            description: data.description || undefined,
-            permissionIds: data.permissionIds,
-          });
-          toast.success(t("createSuccess"));
-        }
-        onSuccess();
-        onOpenChange(false);
-      } catch (err) {
-        const message =
-          err instanceof Error ? err.message : "Something went wrong";
-        toast.error(message);
-      } finally {
-        setSubmitting(false);
-      }
-    },
-    [isEdit, role, onSuccess, onOpenChange, t],
-  );
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>{isEdit ? t("edit") : t("create")}</DialogTitle>
         </DialogHeader>
-        <AppForm onSubmit={form.handleSubmit(onSubmit)}>
+        <AppForm onSubmit={form.handleSubmit(() => submitForm())}>
           <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="name">{t("name")}</Label>
@@ -222,6 +215,7 @@ export function RoleFormDialog({
               {tCommon("cancel")}
             </Button>
             <Button type="submit" disabled={submitting}>
+              {submitting ? <Loader2 className="size-4 animate-spin" /> : null}
               {submitting ? tCommon("loading") : tCommon("save")}
             </Button>
           </DialogFooter>

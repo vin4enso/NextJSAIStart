@@ -9,7 +9,8 @@
     "search": "Search",
     "actions": "Actions",
     "confirm": "Confirm",
-    "back": "Back"
+    "back": "Back",
+    "updateError": "Failed to update"
   },
   "auth": {
     "login": "Sign In",
