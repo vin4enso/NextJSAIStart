@@ -6,6 +6,22 @@ export interface MenuItem {
   children?: MenuItem[];
 }
 
+export function filterMenuByPermissions(
+  items: MenuItem[],
+  permissions: string[],
+): MenuItem[] {
+  return items.reduce<MenuItem[]>((acc, item) => {
+    if (item.permission && !permissions.includes(item.permission)) {
+      return acc;
+    }
+    const filteredChildren = item.children
+      ? filterMenuByPermissions(item.children, permissions)
+      : undefined;
+    acc.push({ ...item, children: filteredChildren });
+    return acc;
+  }, []);
+}
+
 export const menu: MenuItem[] = [
   { title: "nav.dashboard", href: "/dashboard", icon: "LayoutDashboard" },
   { title: "nav.profile", href: "/profile", icon: "User" },
