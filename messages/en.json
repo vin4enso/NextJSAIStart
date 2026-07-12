@@ -56,7 +56,8 @@
     "users": "Users",
     "roles": "Roles",
     "permissions": "Permissions",
-    "admin": "Admin"
+    "admin": "Admin",
+    "email": "Email"
   },
   "user": {
     "title": "Users",

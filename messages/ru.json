@@ -56,7 +56,8 @@
     "users": "Пользователи",
     "roles": "Роли",
     "permissions": "Разрешения",
-    "admin": "Админка"
+    "admin": "Админка",
+    "email": "Email"
   },
   "user": {
     "title": "Пользователи",
