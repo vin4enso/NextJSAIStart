@@ -36,6 +36,7 @@ export const roles = sqliteTable("roles", {
   updatedAt: text("updated_at")
     .notNull()
     .$defaultFn(() => new Date().toISOString()),
+  deletedAt: text("deleted_at"),
 });
 
 export const permissions = sqliteTable("permissions", {
