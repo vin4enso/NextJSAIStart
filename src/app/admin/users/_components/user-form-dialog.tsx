@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -18,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AppForm } from "@/components/app-form";
+import { useFormMutation } from "@/hooks/use-form-mutation";
 import { apiClient } from "@/lib/api-client";
 import { userApi } from "@/api/user.api";
 import type { CreateUserDTO, UpdateUserDTO } from "@/schemas/user";
@@ -61,7 +63,6 @@ export function UserFormDialog({
   const isEdit = !!user;
   const [rolesList, setRolesList] = useState<Role[]>([]);
   const [loadingRoles, setLoadingRoles] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -101,6 +102,35 @@ export function UserFormDialog({
     }
   }, [open, user, form]);
 
+  const { mutate: submitForm, isPending: submitting } = useFormMutation({
+    mutationFn: async () => {
+      const data = form.getValues();
+      if (isEdit && user) {
+        const updateData: UpdateUserDTO = {
+          name: data.name,
+          email: data.email,
+          isActive: data.isActive,
+          roleIds: data.roleIds,
+        };
+        return userApi.update(user.id, updateData);
+      } else {
+        const createData: CreateUserDTO = {
+          name: data.name,
+          email: data.email,
+          password: data.password ?? "",
+          isActive: data.isActive,
+          roleIds: data.roleIds,
+        };
+        return userApi.create(createData);
+      }
+    },
+    onSuccess: () => {
+      onSuccess();
+      onOpenChange(false);
+    },
+    successMessage: isEdit ? t("updateSuccess") : t("createSuccess"),
+  });
+
   const toggleRole = (roleId: string) => {
     const current = form.getValues("roleIds");
     if (current.includes(roleId)) {
@@ -113,40 +143,6 @@ export function UserFormDialog({
     }
   };
 
-  const onSubmit = async (data: FormValues) => {
-    setSubmitting(true);
-    try {
-      if (isEdit && user) {
-        const updateData: UpdateUserDTO = {
-          name: data.name,
-          email: data.email,
-          isActive: data.isActive,
-          roleIds: data.roleIds,
-        };
-        await userApi.update(user.id, updateData);
-        toast.success(t("updateSuccess"));
-      } else {
-        const createData: CreateUserDTO = {
-          name: data.name,
-          email: data.email,
-          password: data.password ?? "",
-          isActive: data.isActive,
-          roleIds: data.roleIds,
-        };
-        await userApi.create(createData);
-        toast.success(t("createSuccess"));
-      }
-      onSuccess();
-      onOpenChange(false);
-    } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Something went wrong";
-      toast.error(message);
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
@@ -156,7 +152,7 @@ export function UserFormDialog({
             {isEdit ? t("edit") : t("create")}
           </DialogDescription>
         </DialogHeader>
-        <AppForm onSubmit={form.handleSubmit(onSubmit)}>
+        <AppForm onSubmit={form.handleSubmit(() => submitForm())}>
           <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="name">{t("name")}</Label>
@@ -248,6 +244,7 @@ export function UserFormDialog({
               {tCommon("cancel")}
             </Button>
             <Button type="submit" disabled={submitting}>
+              {submitting ? <Loader2 className="size-4 animate-spin" /> : null}
               {submitting ? tCommon("loading") : tCommon("save")}
             </Button>
           </DialogFooter>
