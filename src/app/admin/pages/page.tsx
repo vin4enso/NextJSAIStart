@@ -35,6 +35,7 @@ interface PageRow {
   createdAt: string;
   updatedAt: string;
   sectionName: string | null;
+  sectionSlug: string | null;
 }
 
 interface PaginationMeta {
@@ -153,6 +154,11 @@ export default function PagesPage() {
               {t("home")}
             </Badge>
           )}
+          {row.original.slug === "index" && row.original.sectionId && (
+            <Badge variant="secondary" className="ml-2">
+              Index
+            </Badge>
+          )}
         </span>
       ),
     },
@@ -160,8 +166,8 @@ export default function PagesPage() {
       accessorKey: "slug",
       header: t("slug"),
       cell: ({ row }) => {
-        const prefix = row.original.sectionName
-          ? `/${row.original.sectionName.toLowerCase()}/`
+        const prefix = row.original.sectionSlug
+          ? `/${row.original.sectionSlug}/`
           : "/";
         return (
           <code className="bg-muted rounded px-1.5 py-0.5 text-xs">
@@ -205,6 +211,16 @@ export default function PagesPage() {
               }
             />
             <DropdownMenuContent align="end">
+              <DropdownMenuItem
+                onClick={() => {
+                  const url = p.sectionSlug
+                    ? `/${p.sectionSlug}/${p.slug}`
+                    : `/${p.slug}`;
+                  window.open(url, "_blank");
+                }}
+              >
+                {tCommon("preview")}
+              </DropdownMenuItem>
               <DropdownMenuItem onClick={() => handleEdit(p)}>
                 {tCommon("edit")}
               </DropdownMenuItem>

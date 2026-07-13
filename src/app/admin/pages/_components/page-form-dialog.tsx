@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -44,6 +44,15 @@ interface PageFormDialogProps {
   page?: PageRecord | null;
 }
 
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
 export function PageFormDialog({
   open,
   onOpenChange,
@@ -54,19 +63,20 @@ export function PageFormDialog({
   const tCommon = useTranslations("common");
   const isEdit = !!page;
   const [sectionList, setSectionList] = useState<Section[]>([]);
+  const slugManuallyEdited = useRef(false);
 
   const form = useForm<CreatePageDTO>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(CreatePageSchema) as any,
     defaultValues: {
-      title: page?.title ?? "",
-      slug: page?.slug ?? "",
-      sectionId: page?.sectionId ?? null,
-      content: page?.content ?? "",
-      metaTitle: page?.metaTitle ?? "",
-      metaDescription: page?.metaDescription ?? "",
-      isPublished: page?.isPublished ?? false,
-      isHome: page?.isHome ?? false,
+      title: "",
+      slug: "",
+      sectionId: null,
+      content: "",
+      metaTitle: "",
+      metaDescription: "",
+      isPublished: false,
+      isHome: false,
     },
   });
 
@@ -81,16 +91,56 @@ export function PageFormDialog({
     }
   }, [open]);
 
-  const generateSlug = useCallback(() => {
-    const title = form.getValues("title");
-    const slug = title
-      .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, "")
-      .replace(/\s+/g, "-")
-      .replace(/-+/g, "-")
-      .replace(/^-|-$/g, "");
+  useEffect(() => {
+    if (!open) {
+      form.reset();
+      slugManuallyEdited.current = false;
+      return;
+    }
+    if (page) {
+      form.reset({
+        title: page.title,
+        slug: page.slug,
+        sectionId: page.sectionId,
+        content: page.content ?? "",
+        metaTitle: page.metaTitle ?? "",
+        metaDescription: page.metaDescription ?? "",
+        isPublished: page.isPublished,
+        isHome: page.isHome,
+      });
+      slugManuallyEdited.current = true;
+    } else {
+      form.reset({
+        title: "",
+        slug: "",
+        sectionId: null,
+        content: "",
+        metaTitle: "",
+        metaDescription: "",
+        isPublished: false,
+        isHome: false,
+      });
+      slugManuallyEdited.current = false;
+    }
+  }, [open, page, form]);
+
+  const isHomeDisabled = page?.isHome;
+  const isIndexPage = page?.slug === "index" && !!page?.sectionId;
+
+  const titleValue = form.watch("title");
+  useEffect(() => {
+    if (slugManuallyEdited.current || isIndexPage) return;
+    const slug = slugify(titleValue);
     form.setValue("slug", slug);
-  }, [form]);
+  }, [titleValue, form, isIndexPage]);
+
+  const handleSlugChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      slugManuallyEdited.current = true;
+      form.setValue("slug", e.target.value);
+    },
+    [form],
+  );
 
   const { mutate: submitForm, isPending: submitting } = useFormMutation({
     mutationFn: async () => {
@@ -107,8 +157,6 @@ export function PageFormDialog({
     },
     successMessage: isEdit ? t("updateSuccess") : t("createSuccess"),
   });
-
-  const isHomeDisabled = page?.isHome;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -132,19 +180,13 @@ export function PageFormDialog({
                 )}
               </div>
               <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="slug">{t("slug")}</Label>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={generateSlug}
-                    className="text-xs"
-                  >
-                    {t("generateSlug")}
-                  </Button>
-                </div>
-                <Input id="slug" {...form.register("slug")} />
+                <Label htmlFor="slug">{t("slug")}</Label>
+                <Input
+                  id="slug"
+                  {...form.register("slug")}
+                  onChange={handleSlugChange}
+                  disabled={isIndexPage}
+                />
                 {form.formState.errors.slug && (
                   <p className="text-destructive text-xs">
                     {form.formState.errors.slug.message}

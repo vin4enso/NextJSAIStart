@@ -12,7 +12,8 @@
     "back": "Back",
     "yes": "Yes",
     "no": "No",
-    "updateError": "Failed to update"
+    "updateError": "Failed to update",
+    "preview": "Preview"
   },
   "auth": {
     "login": "Sign In",

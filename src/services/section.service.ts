@@ -1,8 +1,11 @@
 import { randomUUID } from "node:crypto";
 import { db } from "@/lib/db";
 import { sections, pages } from "@/drizzle/schema";
-import { eq, like, and, count, asc, isNull } from "drizzle-orm";
+import { eq, like, and, count, asc, isNull, ne } from "drizzle-orm";
 import type { CreateSectionDTO, UpdateSectionDTO } from "@/schemas/section";
+import { pageService } from "./page.service";
+
+const INDEX_SLUG = "index";
 
 export const sectionService = {
   async list(
@@ -37,7 +40,13 @@ export const sectionService = {
         const [pageCount] = await db
           .select({ count: count() })
           .from(pages)
-          .where(and(eq(pages.sectionId, section.id), isNull(pages.deletedAt)));
+          .where(
+            and(
+              eq(pages.sectionId, section.id),
+              ne(pages.slug, INDEX_SLUG),
+              isNull(pages.deletedAt),
+            ),
+          );
         return { ...section, pageCount: pageCount.count };
       }),
     );
@@ -96,6 +105,17 @@ export const sectionService = {
       })
       .run();
 
+    await pageService.create({
+      title: data.name,
+      slug: INDEX_SLUG,
+      sectionId: id,
+      content: data.content ?? "",
+      metaTitle: data.metaTitle ?? "",
+      metaDescription: data.metaDescription ?? "",
+      isPublished: data.isPublished ?? true,
+      isHome: false,
+    });
+
     return this.getById(id);
   },
 
@@ -124,6 +144,26 @@ export const sectionService = {
       db.update(sections).set(updateData).where(eq(sections.id, id)).run();
     }
 
+    if (data.name !== undefined) {
+      const [indexPage] = await db
+        .select({ id: pages.id })
+        .from(pages)
+        .where(
+          and(
+            eq(pages.sectionId, id),
+            eq(pages.slug, INDEX_SLUG),
+            isNull(pages.deletedAt),
+          ),
+        )
+        .limit(1);
+      if (indexPage) {
+        db.update(pages)
+          .set({ title: data.name })
+          .where(eq(pages.id, indexPage.id))
+          .run();
+      }
+    }
+
     return this.getById(id);
   },
 
@@ -136,6 +176,10 @@ export const sectionService = {
   },
 
   async delete(id: string) {
+    db.delete(pages)
+      .where(and(eq(pages.sectionId, id), eq(pages.slug, INDEX_SLUG)))
+      .run();
+
     const hasChildren = await this.hasPages(id);
     if (hasChildren) return false;
 

@@ -9,6 +9,7 @@ import {
   count,
   isNull,
   desc,
+  asc,
   ne,
   type SQL,
 } from "drizzle-orm";
@@ -59,19 +60,40 @@ export const pageService = {
     const items = await Promise.all(
       rows.map(async (row) => {
         let sectionName: string | null = null;
+        let sectionSlug: string | null = null;
         if (row.sectionId) {
           const [section] = await db
-            .select({ name: sections.name })
+            .select({ name: sections.name, slug: sections.slug })
             .from(sections)
             .where(eq(sections.id, row.sectionId))
             .limit(1);
           sectionName = section?.name ?? null;
+          sectionSlug = section?.slug ?? null;
         }
-        return { ...row, sectionName };
+        return { ...row, sectionName, sectionSlug };
       }),
     );
 
     return { items, total, page, pageSize, totalPages };
+  },
+
+  async listBySection(sectionId: string, options?: { excludeSlug?: string }) {
+    const conditions: SQL[] = [
+      eq(pages.sectionId, sectionId),
+      isNull(pages.deletedAt),
+    ];
+    if (options?.excludeSlug) {
+      conditions.push(ne(pages.slug, options.excludeSlug));
+    }
+
+    const rows = await db
+      .select()
+      .from(pages)
+      .where(and(...conditions))
+      .orderBy(asc(pages.slug))
+      .all();
+
+    return rows;
   },
 
   async getById(id: string) {
@@ -83,16 +105,18 @@ export const pageService = {
     if (!row) return null;
 
     let sectionName: string | null = null;
+    let sectionSlug: string | null = null;
     if (row.sectionId) {
       const [section] = await db
-        .select({ name: sections.name })
+        .select({ name: sections.name, slug: sections.slug })
         .from(sections)
         .where(eq(sections.id, row.sectionId))
         .limit(1);
       sectionName = section?.name ?? null;
+      sectionSlug = section?.slug ?? null;
     }
 
-    return { ...row, sectionName };
+    return { ...row, sectionName, sectionSlug };
   },
 
   async getBySlug(slug: string) {

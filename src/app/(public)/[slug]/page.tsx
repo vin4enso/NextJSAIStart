@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { sectionService } from "@/services/section.service";
 import { pageService } from "@/services/page.service";
@@ -11,14 +12,48 @@ export default async function PublicSlugPage({
 
   const section = await sectionService.getBySlug(slug);
   if (section && section.isPublished) {
+    const indexPage = await pageService.getBySectionAndSlug(
+      section.slug,
+      "index",
+    );
+    const childPages = indexPage
+      ? await pageService.listBySection(section.id, { excludeSlug: "index" })
+      : await pageService.listBySection(section.id);
+
+    const content = indexPage?.content ?? section.content ?? "";
+
     return (
-      <article className="prose prose-lg max-w-none">
-        <h1>{section.name}</h1>
-        {section.description && <p className="lead">{section.description}</p>}
-        {section.content && (
-          <div dangerouslySetInnerHTML={{ __html: section.content }} />
+      <div>
+        <article className="prose prose-lg max-w-none">
+          <h1>{indexPage?.title ?? section.name}</h1>
+          {section.description && !indexPage && (
+            <p className="lead">{section.description}</p>
+          )}
+          {content && <div dangerouslySetInnerHTML={{ __html: content }} />}
+        </article>
+
+        {childPages.length > 0 && (
+          <nav className="mt-12 border-t pt-8">
+            <h2 className="text-muted-foreground mb-4 text-sm font-medium tracking-wider uppercase">
+              Pages in this section
+            </h2>
+            <ul className="space-y-3">
+              {childPages.map(
+                (p: { id: string; slug: string; title: string }) => (
+                  <li key={p.id}>
+                    <Link
+                      href={`/${section.slug}/${p.slug}`}
+                      className="hover:text-primary text-base font-medium transition-colors"
+                    >
+                      {p.title}
+                    </Link>
+                  </li>
+                ),
+              )}
+            </ul>
+          </nav>
         )}
-      </article>
+      </div>
     );
   }
 
