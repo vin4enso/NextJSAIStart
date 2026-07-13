@@ -36,6 +36,13 @@
       "when": 1783859708112,
       "tag": "0004_silly_shooting_star",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1783949256195,
+      "tag": "0005_lumpy_yellow_claw",
+      "breakpoints": true
     }
   ]
 }
