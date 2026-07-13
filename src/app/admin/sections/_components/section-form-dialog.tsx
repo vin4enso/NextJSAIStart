@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,6 +29,15 @@ interface SectionFormDialogProps {
   section?: Section | null;
 }
 
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
 export function SectionFormDialog({
   open,
   onOpenChange,
@@ -37,21 +47,58 @@ export function SectionFormDialog({
   const t = useTranslations("section");
   const tCommon = useTranslations("common");
   const isEdit = !!section;
+  const slugManuallyEdited = useRef(false);
 
   const form = useForm<CreateSectionDTO>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(CreateSectionSchema) as any,
     defaultValues: {
-      name: section?.name ?? "",
-      slug: section?.slug ?? "",
-      description: section?.description ?? "",
-      content: section?.content ?? "",
-      metaTitle: section?.metaTitle ?? "",
-      metaDescription: section?.metaDescription ?? "",
-      sortOrder: section?.sortOrder ?? 0,
-      isPublished: section?.isPublished ?? true,
+      name: "",
+      slug: "",
+      sortOrder: 0,
+      isPublished: true,
     },
   });
+
+  useEffect(() => {
+    if (!open) {
+      form.reset();
+      slugManuallyEdited.current = false;
+      return;
+    }
+    if (section) {
+      form.reset({
+        name: section.name,
+        slug: section.slug,
+        sortOrder: section.sortOrder ?? 0,
+        isPublished: section.isPublished ?? true,
+      });
+      slugManuallyEdited.current = true;
+    } else {
+      form.reset({
+        name: "",
+        slug: "",
+        sortOrder: 0,
+        isPublished: true,
+      });
+      slugManuallyEdited.current = false;
+    }
+  }, [open, section, form]);
+
+  const nameValue = form.watch("name");
+  useEffect(() => {
+    if (slugManuallyEdited.current) return;
+    const slug = slugify(nameValue);
+    form.setValue("slug", slug);
+  }, [nameValue, form]);
+
+  const handleSlugChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      slugManuallyEdited.current = true;
+      form.setValue("slug", e.target.value);
+    },
+    [form],
+  );
 
   const { mutate: submitForm, isPending: submitting } = useFormMutation({
     mutationFn: async () => {
@@ -91,27 +138,16 @@ export function SectionFormDialog({
             </div>
             <div className="space-y-2">
               <Label htmlFor="slug">{t("slug")}</Label>
-              <Input id="slug" {...form.register("slug")} />
+              <Input
+                id="slug"
+                {...form.register("slug")}
+                onChange={handleSlugChange}
+              />
               {form.formState.errors.slug && (
                 <p className="text-destructive text-xs">
                   {form.formState.errors.slug.message}
                 </p>
               )}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="description">{t("description")}</Label>
-              <Input id="description" {...form.register("description")} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="metaTitle">{t("metaTitle")}</Label>
-              <Input id="metaTitle" {...form.register("metaTitle")} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="metaDescription">{t("metaDescription")}</Label>
-              <Input
-                id="metaDescription"
-                {...form.register("metaDescription")}
-              />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">

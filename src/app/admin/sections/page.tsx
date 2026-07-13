@@ -173,6 +173,11 @@ export default function SectionsPage() {
               }
             />
             <DropdownMenuContent align="end">
+              <DropdownMenuItem
+                onClick={() => window.open(`/${section.slug}`, "_blank")}
+              >
+                {tCommon("preview")}
+              </DropdownMenuItem>
               <DropdownMenuItem onClick={() => handleEdit(section)}>
                 {tCommon("edit")}
               </DropdownMenuItem>

@@ -207,6 +207,24 @@ async function main() {
 
   console.log("Sample section created");
 
+  const sampleIndexPageId = randomUUID();
+  db.insert(pages)
+    .values({
+      id: sampleIndexPageId,
+      sectionId: sampleSectionId,
+      title: "About",
+      slug: "index",
+      content: "<h2>About Us</h2><p>Sample about page content.</p>",
+      isPublished: true,
+      isHome: false,
+      publishedAt: now,
+      createdAt: now,
+      updatedAt: now,
+    })
+    .run();
+
+  console.log("Sample index page created");
+
   const samplePageId = randomUUID();
   db.insert(pages)
     .values({
