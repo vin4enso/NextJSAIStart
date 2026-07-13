@@ -12,5 +12,8 @@ export default defineConfig({
     globals: true,
     setupFiles: ["./vitest.setup.ts"],
     include: ["src/**/*.test.{ts,tsx}"],
+    env: {
+      VITEST_DB_PATH: "./data/test.db",
+    },
   },
 });

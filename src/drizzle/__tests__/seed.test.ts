@@ -7,12 +7,15 @@ import {
   permissions,
   rolePermissions,
   userRoles,
+  pages,
+  sections,
 } from "@/drizzle/schema";
 import { eq, and } from "drizzle-orm";
 
 describe("seed data", () => {
   beforeAll(async () => {
-    await import("@/drizzle/seed");
+    const { main } = await import("@/drizzle/seed");
+    await main();
   });
 
   it("creates System role with isSystem = true", () => {
@@ -47,12 +50,16 @@ describe("seed data", () => {
     expect(admin!.deletedAt).toBeNull();
   });
 
-  it("creates all 13 permission keys", () => {
+  it("creates all 17 permission keys", () => {
     const allPermissions = db.select().from(permissions).all();
     const keys = allPermissions.map((p) => p.key).sort();
 
     const expectedKeys = [
       "admin.access",
+      "pages.create",
+      "pages.delete",
+      "pages.read",
+      "pages.update",
       "password.change",
       "permissions.read",
       "permissions.update",
@@ -61,6 +68,10 @@ describe("seed data", () => {
       "roles.delete",
       "roles.read",
       "roles.update",
+      "sections.create",
+      "sections.delete",
+      "sections.read",
+      "sections.update",
       "users.create",
       "users.delete",
       "users.read",
@@ -129,5 +140,48 @@ describe("seed data", () => {
       .get();
 
     expect(assignment).toBeDefined();
+  });
+
+  it("creates a home page with slug 'home'", () => {
+    const homePage = db
+      .select()
+      .from(pages)
+      .where(eq(pages.slug, "home"))
+      .get();
+    expect(homePage).toBeDefined();
+    expect(homePage!.title).toBe("Home");
+    expect(homePage!.isHome).toBe(true);
+    expect(homePage!.isPublished).toBe(true);
+    expect(homePage!.sectionId).toBeNull();
+    expect(homePage!.deletedAt).toBeNull();
+  });
+
+  it("creates a sample section", () => {
+    const section = db
+      .select()
+      .from(sections)
+      .where(eq(sections.slug, "about"))
+      .get();
+    expect(section).toBeDefined();
+    expect(section!.name).toBe("About");
+    expect(section!.isPublished).toBe(true);
+    expect(section!.sortOrder).toBe(0);
+  });
+
+  it("creates a sample page within the About section", () => {
+    const section = db
+      .select()
+      .from(sections)
+      .where(eq(sections.slug, "about"))
+      .get()!;
+    const samplePage = db
+      .select()
+      .from(pages)
+      .where(and(eq(pages.sectionId, section.id), eq(pages.slug, "team")))
+      .get();
+    expect(samplePage).toBeDefined();
+    expect(samplePage!.title).toBe("Team");
+    expect(samplePage!.isPublished).toBe(true);
+    expect(samplePage!.isHome).toBe(false);
   });
 });

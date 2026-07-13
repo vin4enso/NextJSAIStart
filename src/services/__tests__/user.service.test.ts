@@ -8,7 +8,8 @@ import type { CreateUserDTO } from "@/schemas/user";
 
 describe("userService", () => {
   beforeAll(async () => {
-    await import("@/drizzle/seed");
+    const { main } = await import("@/drizzle/seed");
+    await main();
   });
 
   describe("create", () => {

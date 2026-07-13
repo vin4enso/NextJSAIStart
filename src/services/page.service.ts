@@ -1,7 +1,17 @@
 import { randomUUID } from "node:crypto";
 import { db } from "@/lib/db";
 import { pages, sections } from "@/drizzle/schema";
-import { eq, like, and, or, count, isNull, desc, type SQL } from "drizzle-orm";
+import {
+  eq,
+  like,
+  and,
+  or,
+  count,
+  isNull,
+  desc,
+  ne,
+  type SQL,
+} from "drizzle-orm";
 import type { CreatePageDTO, UpdatePageDTO } from "@/schemas/page";
 
 export const pageService = {
@@ -219,7 +229,8 @@ export const pageService = {
       .where(eq(pages.id, id))
       .limit(1);
 
-    if (row?.isHome) return false;
+    if (!row) return false;
+    if (row.isHome) return false;
 
     const now = new Date().toISOString();
     db.update(pages)
@@ -239,7 +250,7 @@ export const pageService = {
       eq(pages.sectionId, sectionId),
       isNull(pages.deletedAt),
     ];
-    if (excludeId) conditions.push(eq(pages.id, excludeId));
+    if (excludeId) conditions.push(ne(pages.id, excludeId));
 
     const [result] = await db
       .select({ count: count() })
@@ -254,7 +265,7 @@ export const pageService = {
       isNull(pages.sectionId),
       isNull(pages.deletedAt),
     ];
-    if (excludeId) conditions.push(eq(pages.id, excludeId));
+    if (excludeId) conditions.push(ne(pages.id, excludeId));
 
     const [result] = await db
       .select({ count: count() })

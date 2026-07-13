@@ -1,4 +1,6 @@
 import { randomUUID, scryptSync, randomBytes } from "node:crypto";
+import { fileURLToPath } from "node:url";
+import path from "node:path";
 import bcrypt from "bcryptjs";
 import { db } from "@/lib/db";
 import {
@@ -12,6 +14,7 @@ import {
   pages,
   sections,
 } from "@/drizzle/schema";
+import { migrate } from "drizzle-orm/better-sqlite3/migrator";
 
 const PERMISSION_DEFINITIONS = [
   { key: "users.read", name: "View users", group: "users" },
@@ -43,6 +46,12 @@ const PERMISSION_DEFINITIONS = [
 
 async function main() {
   console.log("Seeding database...");
+
+  const migrationsFolder = path.join(
+    path.dirname(fileURLToPath(import.meta.url)),
+    "migrations",
+  );
+  migrate(db, { migrationsFolder });
 
   db.delete(sessions).run();
   db.delete(userRoles).run();
@@ -220,6 +229,9 @@ async function main() {
   console.log("Existing sessions cleared. Please re-login.");
 }
 
-export { main };
+const isMainModule = process.argv[1]?.includes("seed");
+if (isMainModule) {
+  main();
+}
 
-main();
+export { main };
