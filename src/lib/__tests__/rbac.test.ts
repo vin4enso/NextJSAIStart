@@ -8,7 +8,8 @@ describe("rbac", () => {
   let adminUserId: string;
 
   beforeAll(async () => {
-    await import("@/drizzle/seed");
+    const { main } = await import("@/drizzle/seed");
+    await main();
 
     const admin = db
       .select()

@@ -6,7 +6,8 @@ import { roleService } from "@/services/role.service";
 
 describe("roleService", () => {
   beforeAll(async () => {
-    await import("@/drizzle/seed");
+    const { main } = await import("@/drizzle/seed");
+    await main();
   });
 
   const testRoleName = "test-soft-delete-role";
