@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import {
@@ -17,7 +17,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AppForm } from "@/components/app-form";
-import { TipTapEditor } from "@/components/tiptap-editor";
 import { useFormMutation } from "@/hooks/use-form-mutation";
 import { pageApi } from "@/api/page.api";
 import { sectionApi } from "@/api/section.api";
@@ -72,7 +71,6 @@ export function PageFormDialog({
       title: "",
       slug: "",
       sectionId: null,
-      content: "",
       metaTitle: "",
       metaDescription: "",
       isPublished: false,
@@ -102,7 +100,6 @@ export function PageFormDialog({
         title: page.title,
         slug: page.slug,
         sectionId: page.sectionId,
-        content: page.content ?? "",
         metaTitle: page.metaTitle ?? "",
         metaDescription: page.metaDescription ?? "",
         isPublished: page.isPublished,
@@ -114,7 +111,6 @@ export function PageFormDialog({
         title: "",
         slug: "",
         sectionId: null,
-        content: "",
         metaTitle: "",
         metaDescription: "",
         isPublished: false,
@@ -209,20 +205,6 @@ export function PageFormDialog({
                   </option>
                 ))}
               </select>
-            </div>
-
-            <div className="space-y-2">
-              <Label>{t("content")}</Label>
-              <Controller
-                name="content"
-                control={form.control}
-                render={({ field }) => (
-                  <TipTapEditor
-                    value={field.value ?? ""}
-                    onChange={field.onChange}
-                  />
-                )}
-              />
             </div>
 
             <div className="space-y-2">

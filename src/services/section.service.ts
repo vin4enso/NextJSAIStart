@@ -109,7 +109,6 @@ export const sectionService = {
       title: data.name,
       slug: INDEX_SLUG,
       sectionId: id,
-      content: data.content ?? "",
       metaTitle: data.metaTitle ?? "",
       metaDescription: data.metaDescription ?? "",
       isPublished: data.isPublished ?? true,

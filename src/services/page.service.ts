@@ -14,6 +14,7 @@ import {
   type SQL,
 } from "drizzle-orm";
 import type { CreatePageDTO, UpdatePageDTO } from "@/schemas/page";
+import { pageBlockService } from "@/services/page-block.service";
 
 export const pageService = {
   async list(
@@ -165,6 +166,31 @@ export const pageService = {
     return row || null;
   },
 
+  async publish(id: string) {
+    const now = new Date().toISOString();
+    const existing = await this.getById(id);
+    if (!existing) return null;
+
+    db.update(pages)
+      .set({
+        isPublished: true,
+        publishedAt: existing.publishedAt ?? now,
+        updatedAt: now,
+      })
+      .where(eq(pages.id, id))
+      .run();
+
+    return this.getById(id);
+  },
+
+  async getWithBlocks(id: string) {
+    const page = await this.getById(id);
+    if (!page) return null;
+
+    const blocks = await pageBlockService.getTree(id);
+    return { ...page, blocks };
+  },
+
   async create(data: CreatePageDTO) {
     const id = randomUUID();
     const now = new Date().toISOString();
@@ -189,7 +215,6 @@ export const pageService = {
         sectionId: data.sectionId ?? null,
         title: data.title,
         slug: data.slug,
-        content: data.content ?? null,
         metaTitle: data.metaTitle ?? null,
         metaDescription: data.metaDescription ?? null,
         isPublished: data.isPublished ?? false,
@@ -227,7 +252,6 @@ export const pageService = {
     if (data.title !== undefined) updateData.title = data.title;
     if (data.slug !== undefined) updateData.slug = data.slug;
     if (data.sectionId !== undefined) updateData.sectionId = data.sectionId;
-    if (data.content !== undefined) updateData.content = data.content;
     if (data.metaTitle !== undefined) updateData.metaTitle = data.metaTitle;
     if (data.metaDescription !== undefined)
       updateData.metaDescription = data.metaDescription;

@@ -224,6 +224,26 @@ export default function PagesPage() {
               <DropdownMenuItem onClick={() => handleEdit(p)}>
                 {tCommon("edit")}
               </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  window.open(`/admin/pages/${p.id}`, "_self");
+                }}
+              >
+                Blocks
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={async () => {
+                  try {
+                    await pageApi.publish(p.id);
+                    toast.success("Page published");
+                    fetchPages(pageRef.current, searchRef.current);
+                  } catch {
+                    toast.error("Failed to publish");
+                  }
+                }}
+              >
+                {p.isPublished ? "Unpublish" : "Publish"}
+              </DropdownMenuItem>
               {!p.isHome && (
                 <DropdownMenuItem
                   variant="destructive"

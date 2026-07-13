@@ -217,10 +217,41 @@ export const sectionsRelations = relations(sections, ({ many }) => ({
   pages: many(pages),
 }));
 
-export const pagesRelations = relations(pages, ({ one }) => ({
+export const pageBlocks = sqliteTable("page_blocks", {
+  id: text("id").primaryKey(),
+  pageId: text("page_id")
+    .notNull()
+    .references(() => pages.id, { onDelete: "cascade" }),
+  parentId: text("parent_id"),
+  blockType: text("block_type").notNull(),
+  sortOrder: integer("sort_order").default(0).notNull(),
+  config: text("config", { mode: "json" })
+    .notNull()
+    .$type<Record<string, unknown>>(),
+  createdAt: text("created_at")
+    .notNull()
+    .$defaultFn(() => new Date().toISOString()),
+  updatedAt: text("updated_at")
+    .notNull()
+    .$defaultFn(() => new Date().toISOString()),
+});
+
+export const pagesRelations = relations(pages, ({ one, many }) => ({
   section: one(sections, {
     fields: [pages.sectionId],
     references: [sections.id],
+  }),
+  pageBlocks: many(pageBlocks),
+}));
+
+export const pageBlocksRelations = relations(pageBlocks, ({ one }) => ({
+  page: one(pages, {
+    fields: [pageBlocks.pageId],
+    references: [pages.id],
+  }),
+  parent: one(pageBlocks, {
+    fields: [pageBlocks.parentId],
+    references: [pageBlocks.id],
   }),
 }));
 

@@ -8,7 +8,6 @@ export const PageSchema = z.object({
     .string()
     .min(1, "Required")
     .regex(/^[a-z0-9-]+$/, "Only lowercase letters, numbers, and hyphens"),
-  content: z.string().optional(),
   metaTitle: z.string().optional(),
   metaDescription: z.string().optional(),
   isPublished: z.boolean().default(false),
