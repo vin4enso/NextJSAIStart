@@ -238,7 +238,7 @@ export function BlockForm({
           />
         );
       })}
-      <Button type="submit">Save</Button>
+      <Button type="submit">{t("blockForm.save")}</Button>
     </form>
   );
 }

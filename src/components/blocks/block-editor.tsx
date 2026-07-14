@@ -47,9 +47,9 @@ export function BlockEditor({ pageId, initialBlocks }: BlockEditorProps) {
         updatedAt: newBlock.updatedAt,
       };
       setBlocks((prev) => [...prev, newBlockCard]);
-      toast.success("Block added");
+      toast.success(t("blockEditor.blockAdded"));
     } catch {
-      toast.error("Failed to add block");
+      toast.error(t("blockEditor.failedToAddBlock"));
     }
   };
 
@@ -76,9 +76,9 @@ export function BlockEditor({ pageId, initialBlocks }: BlockEditorProps) {
         ),
       );
       setEditTarget(null);
-      toast.success("Block updated");
+      toast.success(t("blockEditor.blockUpdated"));
     } catch {
-      toast.error("Failed to update block");
+      toast.error(t("blockEditor.failedToUpdateBlock"));
     }
   };
 
@@ -86,9 +86,9 @@ export function BlockEditor({ pageId, initialBlocks }: BlockEditorProps) {
     try {
       await pageBlockApi.delete(pageId, blockId);
       setBlocks((prev) => prev.filter((b) => b.id !== blockId));
-      toast.success("Block deleted");
+      toast.success(t("blockEditor.blockDeleted"));
     } catch {
-      toast.error("Failed to delete block");
+      toast.error(t("blockEditor.failedToDeleteBlock"));
     }
   };
 
