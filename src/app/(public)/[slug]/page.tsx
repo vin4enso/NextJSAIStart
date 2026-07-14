@@ -2,6 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { sectionService } from "@/services/section.service";
 import { pageService } from "@/services/page.service";
+import { pageBlockService } from "@/services/page-block.service";
+import { BlockRenderer } from "@/components/blocks/block-renderer";
 
 export default async function PublicSlugPage({
   params,
@@ -20,7 +22,9 @@ export default async function PublicSlugPage({
       ? await pageService.listBySection(section.id, { excludeSlug: "index" })
       : await pageService.listBySection(section.id);
 
-    const content = indexPage?.content ?? section.content ?? "";
+    const blocks = indexPage
+      ? await pageBlockService.getTree(indexPage.id)
+      : [];
 
     return (
       <div>
@@ -29,7 +33,7 @@ export default async function PublicSlugPage({
           {section.description && !indexPage && (
             <p className="lead">{section.description}</p>
           )}
-          {content && <div dangerouslySetInnerHTML={{ __html: content }} />}
+          {blocks.length > 0 && <BlockRenderer blocks={blocks} />}
         </article>
 
         {childPages.length > 0 && (
@@ -59,12 +63,11 @@ export default async function PublicSlugPage({
 
   const page = await pageService.getBySlug(slug);
   if (page && page.isPublished) {
+    const blocks = await pageBlockService.getTree(page.id);
     return (
       <article className="prose prose-lg max-w-none">
         <h1>{page.title}</h1>
-        {page.content && (
-          <div dangerouslySetInnerHTML={{ __html: page.content }} />
-        )}
+        {blocks.length > 0 && <BlockRenderer blocks={blocks} />}
       </article>
     );
   }
