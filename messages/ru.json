@@ -95,7 +95,15 @@
     "metaDescription": "Meta Description",
     "content": "Содержание",
     "publishedAt": "Опубликована",
-    "generateSlug": "Сгенерировать"
+    "generateSlug": "Сгенерировать",
+    "index": "Индексная",
+    "blocks": "Блоки",
+    "publishSuccess": "Страница опубликована",
+    "publishError": "Ошибка при публикации",
+    "publish": "Опубликовать",
+    "unpublish": "Снять с публикации",
+    "emptyState": "Добро пожаловать! Создайте главную страницу в панели управления.",
+    "pagesInSection": "Страницы в этом разделе"
   },
   "nav": {
     "dashboard": "Дашборд",
@@ -195,7 +203,13 @@
     "unauthorized": "Необходима авторизация",
     "forbidden": "Доступ запрещён",
     "notFound": "Не найдено",
-    "serverError": "Ошибка сервера"
+    "serverError": "Ошибка сервера",
+    "slugFormat": "Только строчные буквы, цифры и дефисы",
+    "blockNotFound": "Блок не найден",
+    "atLeastOneItem": "Требуется минимум один элемент",
+    "atLeastOneImage": "Требуется минимум одно изображение",
+    "atLeastOnePlan": "Требуется минимум один тариф",
+    "atLeastOneField": "Требуется минимум одно поле"
   },
   "language": "Язык",
   "lang": {
@@ -223,12 +237,16 @@
       "save": "Сохранить",
       "cancel": "Отмена"
     },
+    "blockCard": {
+      "fields": "поля"
+    },
     "heading": "Заголовок",
     "paragraph": "Параграф",
     "image": "Изображение",
     "section": "Секция",
     "cta": "CTA",
     "columns": "Колонки",
+    "column": "Колонка",
     "faq": "FAQ",
     "divider": "Разделитель",
     "video": "Видео",

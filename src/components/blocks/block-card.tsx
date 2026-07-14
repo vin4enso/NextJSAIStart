@@ -13,7 +13,10 @@ interface BlockCardProps {
   depth?: number;
 }
 
-function getConfigPreview(config: Record<string, unknown>): string {
+function getConfigPreview(
+  config: Record<string, unknown>,
+  tFields: string,
+): string {
   const text = config.text as string | undefined;
   if (text) return text;
   const html = config.html as string | undefined;
@@ -24,7 +27,7 @@ function getConfigPreview(config: Record<string, unknown>): string {
   if (title) return title;
   const buttonText = config.buttonText as string | undefined;
   if (buttonText) return buttonText;
-  return `(${Object.keys(config).length} fields)`;
+  return `(${Object.keys(config).length} ${tFields})`;
 }
 
 export function BlockCard({
@@ -34,7 +37,10 @@ export function BlockCard({
   depth = 0,
 }: BlockCardProps) {
   const t = useTranslations("pageBlock");
-  const preview = getConfigPreview(block.config as Record<string, unknown>);
+  const preview = getConfigPreview(
+    block.config as Record<string, unknown>,
+    t("blockCard.fields"),
+  );
   const hasChildren = block.children && block.children.length > 0;
 
   return (

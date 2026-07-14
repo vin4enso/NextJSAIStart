@@ -107,6 +107,7 @@ Always run these before pushing:
 ```bash
 npm run lint
 npm run typecheck
+npm run i18n:check
 npm run build
 npm run test
 ```

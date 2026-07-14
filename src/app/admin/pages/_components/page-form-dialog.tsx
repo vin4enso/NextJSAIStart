@@ -60,6 +60,7 @@ export function PageFormDialog({
 }: PageFormDialogProps) {
   const t = useTranslations("page");
   const tCommon = useTranslations("common");
+  const tErrors = useTranslations("errors");
   const isEdit = !!page;
   const [sectionList, setSectionList] = useState<Section[]>([]);
   const slugManuallyEdited = useRef(false);
@@ -171,7 +172,7 @@ export function PageFormDialog({
                 <Input id="title" {...form.register("title")} />
                 {form.formState.errors.title && (
                   <p className="text-destructive text-xs">
-                    {form.formState.errors.title.message}
+                    {tErrors("required")}
                   </p>
                 )}
               </div>
@@ -185,7 +186,10 @@ export function PageFormDialog({
                 />
                 {form.formState.errors.slug && (
                   <p className="text-destructive text-xs">
-                    {form.formState.errors.slug.message}
+                    {form.formState.errors.slug.message ===
+                    "Only lowercase letters, numbers, and hyphens"
+                      ? tErrors("slugFormat")
+                      : tErrors("required")}
                   </p>
                 )}
               </div>

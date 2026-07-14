@@ -208,6 +208,7 @@ export function BlockForm({
   id,
 }: BlockFormProps) {
   const t = useTranslations("pageBlock");
+  const tErrors = useTranslations("errors");
   const schema = schemas[blockType] ?? z.object({});
   const fields = fieldsMap[blockType] ?? [];
   const form = useForm<Record<string, unknown>>({
@@ -233,7 +234,9 @@ export function BlockForm({
             value={form.watch(field.name)}
             onChange={(v) => form.setValue(field.name, v)}
             error={
-              form.formState.errors[field.name]?.message as string | undefined
+              form.formState.errors[field.name]
+                ? tErrors("required")
+                : undefined
             }
           />
         );
