@@ -43,6 +43,13 @@
       "when": 1783949256195,
       "tag": "0005_lumpy_yellow_claw",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1784042055951,
+      "tag": "0006_open_slayback",
+      "breakpoints": true
     }
   ]
 }

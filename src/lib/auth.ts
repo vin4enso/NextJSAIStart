@@ -10,64 +10,48 @@ function toSqliteValue(value: unknown): unknown {
   return value;
 }
 
+function serializeHook() {
+  return {
+    create: {
+      before: async (data: Record<string, unknown>) => {
+        const serialized: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(data)) {
+          serialized[key] = toSqliteValue(value);
+        }
+        return { data: serialized };
+      },
+    },
+    update: {
+      before: async (data: Record<string, unknown>) => {
+        const serialized: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(data)) {
+          serialized[key] = toSqliteValue(value);
+        }
+        return { data: serialized };
+      },
+    },
+  };
+}
+
+const hook = serializeHook();
+
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "sqlite",
     schema: {
-      users: schema.users,
-      account: schema.accounts,
+      user: schema.users,
       session: schema.sessions,
+      account: schema.accounts,
       verification: schema.verifications,
     },
   }),
   databaseHooks: {
-    user: {
-      create: {
-        before: async (data) => {
-          const serialized: Record<string, unknown> = {};
-          for (const [key, value] of Object.entries(data)) {
-            serialized[key] = toSqliteValue(value);
-          }
-          return { data: serialized };
-        },
-      },
-    },
-    session: {
-      create: {
-        before: async (data) => {
-          const serialized: Record<string, unknown> = {};
-          for (const [key, value] of Object.entries(data)) {
-            serialized[key] = toSqliteValue(value);
-          }
-          return { data: serialized };
-        },
-      },
-    },
-    account: {
-      create: {
-        before: async (data) => {
-          const serialized: Record<string, unknown> = {};
-          for (const [key, value] of Object.entries(data)) {
-            serialized[key] = toSqliteValue(value);
-          }
-          return { data: serialized };
-        },
-      },
-    },
-    verification: {
-      create: {
-        before: async (data) => {
-          const serialized: Record<string, unknown> = {};
-          for (const [key, value] of Object.entries(data)) {
-            serialized[key] = toSqliteValue(value);
-          }
-          return { data: serialized };
-        },
-      },
-    },
+    user: hook,
+    session: hook,
+    account: hook,
+    verification: hook,
   },
   user: {
-    modelName: "users",
     fields: {
       image: "avatar",
     },

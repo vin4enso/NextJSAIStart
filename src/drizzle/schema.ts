@@ -222,7 +222,11 @@ export const pageBlocks = sqliteTable("page_blocks", {
   pageId: text("page_id")
     .notNull()
     .references(() => pages.id, { onDelete: "cascade" }),
-  parentId: text("parent_id"),
+  parentId: text("parent_id").references(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (): any => pageBlocks.id,
+    { onDelete: "set null" },
+  ),
   blockType: text("block_type").notNull(),
   sortOrder: integer("sort_order").default(0).notNull(),
   config: text("config", { mode: "json" })
