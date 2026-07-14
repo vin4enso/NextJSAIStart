@@ -178,13 +178,13 @@ export const CreateBlockDTOSchema = z.object({
   parentId: z.string().nullable().optional(),
   blockType: BlockTypeEnum,
   sortOrder: z.number().default(0),
-  config: BlockConfigSchema,
+  config: z.object({ blockType: BlockTypeEnum }).passthrough(),
 });
 
 export const UpdateBlockDTOSchema = z.object({
   parentId: z.string().nullable().optional(),
   sortOrder: z.number().optional(),
-  config: BlockConfigSchema.optional(),
+  config: z.object({ blockType: BlockTypeEnum }).passthrough().optional(),
 });
 
 export type PageBlock = z.infer<typeof PageBlockSchema>;
