@@ -2,19 +2,21 @@ import { auth } from "@/lib/auth";
 import { pageService } from "@/services/page.service";
 import { requirePermission } from "@/lib/rbac";
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 import { BlockEditor } from "@/components/blocks/block-editor";
 
 export default async function PageEditorPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const session = await auth.api.getSession();
+  const { id } = await params;
+  const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user) redirect("/");
   await requirePermission(session.user.id, "pages.update");
 
-  const page = await pageService.getWithBlocks(params.id);
+  const page = await pageService.getWithBlocks(id);
   if (!page) redirect("/admin/pages");
 
-  return <BlockEditor pageId={params.id} initialBlocks={page.blocks ?? []} />;
+  return <BlockEditor pageId={id} initialBlocks={page.blocks ?? []} />;
 }
