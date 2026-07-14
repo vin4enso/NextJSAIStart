@@ -221,7 +221,7 @@ export function BlockForm({
       {fields.map((field) => {
         const translatedField = {
           ...field,
-          label: t(`${blockType}.${field.name}`),
+          label: t(`${blockType}__${field.name}`),
           options: field.options?.map((o) => ({
             ...o,
             label: t(o.value),
