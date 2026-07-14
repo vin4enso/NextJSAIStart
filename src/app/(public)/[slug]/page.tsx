@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { sectionService } from "@/services/section.service";
 import { pageService } from "@/services/page.service";
 import { pageBlockService } from "@/services/page-block.service";
@@ -10,6 +11,7 @@ export default async function PublicSlugPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
+  const t = await getTranslations("page");
   const { slug } = await params;
 
   const section = await sectionService.getBySlug(slug);
@@ -39,7 +41,7 @@ export default async function PublicSlugPage({
         {childPages.length > 0 && (
           <nav className="mt-12 border-t pt-8">
             <h2 className="text-muted-foreground mb-4 text-sm font-medium tracking-wider uppercase">
-              Pages in this section
+              {t("pagesInSection")}
             </h2>
             <ul className="space-y-3">
               {childPages.map(

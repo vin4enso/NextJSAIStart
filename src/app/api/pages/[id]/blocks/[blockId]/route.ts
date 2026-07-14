@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { auth } from "@/lib/auth";
 import {
   success,
@@ -29,7 +30,10 @@ export async function PATCH(
     }
 
     const block = await pageBlockService.update(blockId, parsed.data);
-    if (!block) return validationError({ blockId: ["Block not found"] });
+    if (!block) {
+      const t = await getTranslations("errors");
+      return validationError({ blockId: [t("blockNotFound")] });
+    }
 
     return success(block);
   } catch (error) {
@@ -50,7 +54,10 @@ export async function DELETE(
 
     const { blockId } = await params;
     const deleted = await pageBlockService.delete(blockId);
-    if (!deleted) return validationError({ blockId: ["Block not found"] });
+    if (!deleted) {
+      const t = await getTranslations("errors");
+      return validationError({ blockId: [t("blockNotFound")] });
+    }
 
     return success(null);
   } catch (error) {

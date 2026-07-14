@@ -156,7 +156,7 @@ export default function PagesPage() {
           )}
           {row.original.slug === "index" && row.original.sectionId && (
             <Badge variant="secondary" className="ml-2">
-              Index
+              {t("index")}
             </Badge>
           )}
         </span>
@@ -229,20 +229,20 @@ export default function PagesPage() {
                   window.open(`/admin/pages/${p.id}`, "_self");
                 }}
               >
-                Blocks
+                {t("blocks")}
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={async () => {
                   try {
                     await pageApi.publish(p.id);
-                    toast.success("Page published");
+                    toast.success(t("publishSuccess"));
                     fetchPages(pageRef.current, searchRef.current);
                   } catch {
-                    toast.error("Failed to publish");
+                    toast.error(t("publishError"));
                   }
                 }}
               >
-                {p.isPublished ? "Unpublish" : "Publish"}
+                {p.isPublished ? t("unpublish") : t("publish")}
               </DropdownMenuItem>
               {!p.isHome && (
                 <DropdownMenuItem

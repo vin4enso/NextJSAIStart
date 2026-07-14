@@ -95,7 +95,15 @@
     "metaDescription": "Meta Description",
     "content": "Content",
     "publishedAt": "Published",
-    "generateSlug": "Generate"
+    "generateSlug": "Generate",
+    "index": "Index",
+    "blocks": "Blocks",
+    "publishSuccess": "Page published",
+    "publishError": "Failed to publish",
+    "publish": "Publish",
+    "unpublish": "Unpublish",
+    "emptyState": "Welcome! Create a home page in the admin panel.",
+    "pagesInSection": "Pages in this section"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -195,7 +203,13 @@
     "unauthorized": "Unauthorized",
     "forbidden": "Forbidden",
     "notFound": "Not found",
-    "serverError": "Server error"
+    "serverError": "Server error",
+    "slugFormat": "Only lowercase letters, numbers, and hyphens",
+    "blockNotFound": "Block not found",
+    "atLeastOneItem": "At least one item required",
+    "atLeastOneImage": "At least one image required",
+    "atLeastOnePlan": "At least one plan required",
+    "atLeastOneField": "At least one field required"
   },
   "language": "Language",
   "lang": {
@@ -223,12 +237,16 @@
       "save": "Save",
       "cancel": "Cancel"
     },
+    "blockCard": {
+      "fields": "fields"
+    },
     "heading": "Heading",
     "paragraph": "Paragraph",
     "image": "Image",
     "section": "Section",
     "cta": "CTA",
     "columns": "Columns",
+    "column": "Column",
     "faq": "FAQ",
     "divider": "Divider",
     "video": "Video",
