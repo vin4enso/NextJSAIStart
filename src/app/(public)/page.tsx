@@ -1,4 +1,6 @@
 import { pageService } from "@/services/page.service";
+import { pageBlockService } from "@/services/page-block.service";
+import { BlockRenderer } from "@/components/blocks/block-renderer";
 
 export default async function HomePage() {
   const page = await pageService.getHome();
@@ -13,12 +15,12 @@ export default async function HomePage() {
     );
   }
 
+  const blocks = await pageBlockService.getTree(page.id);
+
   return (
     <article className="prose prose-lg max-w-none">
       <h1>{page.title}</h1>
-      {page.content && (
-        <div dangerouslySetInnerHTML={{ __html: page.content }} />
-      )}
+      {blocks.length > 0 && <BlockRenderer blocks={blocks} />}
     </article>
   );
 }
