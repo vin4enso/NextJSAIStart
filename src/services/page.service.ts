@@ -189,7 +189,12 @@ export const pageService = {
       .where(and(eq(pages.id, id), isNull(pages.deletedAt)))
       .limit(1);
     if (!row) return null;
-    return row.content ? JSON.parse(row.content) : null;
+    if (!row.content) return null;
+    try {
+      return JSON.parse(row.content);
+    } catch {
+      return null;
+    }
   },
 
   async saveContent(id: string, data: unknown) {
