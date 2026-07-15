@@ -13,7 +13,6 @@ import {
   userRoles,
   pages,
   sections,
-  pageBlocks,
 } from "@/drizzle/schema";
 import { migrate } from "drizzle-orm/better-sqlite3/migrator";
 
@@ -61,7 +60,6 @@ async function main() {
   db.delete(roles).run();
   db.delete(accounts).run();
   db.delete(users).run();
-  db.delete(pageBlocks).run();
   db.delete(pages).run();
   db.delete(sections).run();
 
