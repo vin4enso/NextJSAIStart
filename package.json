@@ -8,14 +8,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "i18n:check": "tsx scripts/check-i18n.ts",
+    "i18n:check": "node scripts/i18n-check.mjs",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    "i18n:check": "node scripts/i18n-check.mjs",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:seed": "tsx src/drizzle/seed.ts",
@@ -26,6 +25,7 @@
     "@base-ui/react": "^1.6.0",
     "@better-auth/drizzle-adapter": "^1.6.23",
     "@hookform/resolvers": "^5.0.1",
+    "@puckeditor/core": "^0.22.2",
     "@tanstack/react-table": "^8.21.2",
     "@tiptap/pm": "^3.27.3",
     "@tiptap/react": "^3.27.3",
@@ -84,13 +84,10 @@
       "prettier --write"
     ],
     "messages/*.json": [
-      "node scripts/i18n-check.mjs"
+      "tsx scripts/check-i18n.ts"
     ],
     "*.{json,css,md}": [
       "prettier --write"
-    ],
-    "messages/*.json": [
-      "tsx scripts/check-i18n.ts"
     ]
   }
 }
