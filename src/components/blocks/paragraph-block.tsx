@@ -1,19 +1,13 @@
-import type { PageBlock } from "@/schemas/page-block";
-
-type BlockWithChildren = PageBlock & { children?: PageBlock[] };
-
 interface ParagraphBlockProps {
-  block: BlockWithChildren;
+  html: string;
+  alignment?: "left" | "center" | "right";
 }
 
-export function ParagraphBlock({ block }: ParagraphBlockProps) {
-  const config = block.config as Record<string, unknown>;
+export function ParagraphBlock({ html, alignment }: ParagraphBlockProps) {
   return (
     <div
-      className={
-        config.alignment ? `text-${config.alignment as string}` : undefined
-      }
-      dangerouslySetInnerHTML={{ __html: config.html as string }}
+      className={alignment ? `text-${alignment}` : undefined}
+      dangerouslySetInnerHTML={{ __html: html }}
     />
   );
 }

@@ -1,22 +1,17 @@
-import type { PageBlock } from "@/schemas/page-block";
-
-type BlockWithChildren = PageBlock & { children?: PageBlock[] };
-
-interface FormBlockProps {
-  block: BlockWithChildren;
+interface FormField {
+  type: "text" | "email" | "textarea" | "select" | "checkbox";
+  label: string;
+  placeholder?: string;
+  required?: boolean;
+  options: string;
 }
 
-export function FormBlock({ block }: FormBlockProps) {
-  const config = block.config as Record<string, unknown>;
-  const fields = config.fields as
-    | Array<{
-        type: string;
-        label: string;
-        placeholder?: string;
-        required?: boolean;
-        options?: string[];
-      }>
-    | undefined;
+interface FormBlockProps {
+  fields: FormField[];
+  submitLabel?: string;
+}
+
+export function FormBlock({ fields, submitLabel }: FormBlockProps) {
   return (
     <form>
       {fields?.map((field, i) => (
@@ -25,28 +20,30 @@ export function FormBlock({ block }: FormBlockProps) {
           {field.type === "textarea" ? (
             <textarea
               placeholder={field.placeholder}
-              required={field.required}
+              required={!!field.required}
             />
-          ) : field.type === "select" && field.options ? (
-            <select required={field.required}>
-              {field.options.map((opt, j) => (
-                <option key={j} value={opt}>
-                  {opt}
-                </option>
-              ))}
+          ) : field.type === "select" ? (
+            <select required={!!field.required}>
+              {field.options
+                ? field.options.split("\n").map((opt, j) => (
+                    <option key={j} value={opt}>
+                      {opt}
+                    </option>
+                  ))
+                : null}
             </select>
+          ) : field.type === "checkbox" ? (
+            <input type="checkbox" required={!!field.required} />
           ) : (
             <input
               type={field.type}
               placeholder={field.placeholder}
-              required={field.required}
+              required={!!field.required}
             />
           )}
         </div>
       ))}
-      {config.submitLabel ? (
-        <button type="submit">{config.submitLabel as string}</button>
-      ) : null}
+      {submitLabel ? <button type="submit">{submitLabel}</button> : null}
     </form>
   );
 }

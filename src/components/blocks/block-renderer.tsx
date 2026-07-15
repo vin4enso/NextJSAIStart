@@ -10,12 +10,20 @@ import { VideoBlock } from "./video-block";
 import { GalleryBlock } from "./gallery-block";
 import { PricingBlock } from "./pricing-block";
 import { FormBlock } from "./form-block";
-import type { PageBlock } from "@/schemas/page-block";
 
-type BlockWithChildren = PageBlock & { children?: BlockWithChildren[] };
+interface BlockRecord {
+  id: string;
+  pageId: string;
+  blockType: string;
+  sortOrder: number;
+  config: Record<string, unknown>;
+  createdAt: string;
+  updatedAt: string;
+  children?: BlockRecord[];
+}
 
 interface BlockRendererProps {
-  blocks: BlockWithChildren[];
+  blocks: BlockRecord[];
 }
 
 export function BlockRenderer({ blocks }: BlockRendererProps) {
@@ -30,32 +38,144 @@ export function BlockRenderer({ blocks }: BlockRendererProps) {
   );
 }
 
-function BlockRendererItem({ block }: { block: BlockWithChildren }) {
+function BlockRendererItem({ block }: { block: BlockRecord }) {
+  const children =
+    block.children && block.children.length > 0 ? (
+      <BlockRenderer blocks={block.children} />
+    ) : null;
+
   switch (block.blockType) {
     case "section":
-      return <SectionBlock block={block} />;
+      return (
+        <SectionBlock
+          title={block.config.title as string | undefined}
+          subtitle={block.config.subtitle as string | undefined}
+        >
+          {children}
+        </SectionBlock>
+      );
     case "heading":
-      return <HeadingBlock block={block} />;
+      return (
+        <HeadingBlock
+          text={block.config.text as string}
+          level={block.config.level as number | undefined}
+          alignment={
+            block.config.alignment as "left" | "center" | "right" | undefined
+          }
+        />
+      );
     case "paragraph":
-      return <ParagraphBlock block={block} />;
+      return (
+        <ParagraphBlock
+          html={block.config.html as string}
+          alignment={
+            block.config.alignment as "left" | "center" | "right" | undefined
+          }
+        />
+      );
     case "image":
-      return <ImageBlock block={block} />;
+      return (
+        <ImageBlock
+          src={block.config.src as string}
+          alt={block.config.alt as string}
+          caption={block.config.caption as string | undefined}
+          sizing={
+            block.config.sizing as "cover" | "contain" | "fill" | undefined
+          }
+        />
+      );
     case "cta":
-      return <CtaBlock block={block} />;
+      return (
+        <CtaBlock
+          title={block.config.title as string | undefined}
+          description={block.config.description as string | undefined}
+          buttonText={block.config.buttonText as string}
+          buttonUrl={block.config.buttonUrl as string}
+          buttonVariant={
+            block.config.buttonVariant as
+              "primary" | "secondary" | "outline" | undefined
+          }
+        />
+      );
     case "columns":
-      return <ColumnsBlock block={block} />;
+      return (
+        <ColumnsBlock columnsCount={block.config.columnsCount as number}>
+          {children}
+        </ColumnsBlock>
+      );
+    case "column":
+      return <>{children}</>;
     case "faq":
-      return <FaqBlock block={block} />;
+      return (
+        <FaqBlock
+          items={
+            (block.config.items as Array<{
+              question: string;
+              answer: string;
+            }>) ?? []
+          }
+        />
+      );
     case "divider":
-      return <DividerBlock block={block} />;
+      return (
+        <DividerBlock
+          style={
+            block.config.style as "solid" | "dashed" | "dotted" | undefined
+          }
+          color={block.config.color as string | undefined}
+          thickness={block.config.thickness as number | undefined}
+        />
+      );
     case "video":
-      return <VideoBlock block={block} />;
+      return (
+        <VideoBlock
+          url={block.config.url as string}
+          autoplay={block.config.autoplay as boolean | undefined}
+          controls={block.config.controls as boolean | undefined}
+        />
+      );
     case "gallery":
-      return <GalleryBlock block={block} />;
+      return (
+        <GalleryBlock
+          images={
+            (block.config.images as Array<{ src: string; alt: string }>) ?? []
+          }
+          layout={
+            block.config.layout as "grid" | "masonry" | "carousel" | undefined
+          }
+        />
+      );
     case "pricing":
-      return <PricingBlock block={block} />;
+      return (
+        <PricingBlock
+          plans={
+            (block.config.plans as Array<{
+              name: string;
+              price: number;
+              currency?: string;
+              period?: string;
+              features: string;
+              ctaText?: string;
+              ctaUrl?: string;
+            }>) ?? []
+          }
+        />
+      );
     case "form":
-      return <FormBlock block={block} />;
+      return (
+        <FormBlock
+          fields={
+            (block.config.fields as Array<{
+              type: "text" | "email" | "textarea" | "select" | "checkbox";
+              label: string;
+              placeholder?: string;
+              required?: boolean;
+              options: string;
+            }>) ?? []
+          }
+          submitLabel={block.config.submitLabel as string | undefined}
+        />
+      );
     default:
       return null;
   }
