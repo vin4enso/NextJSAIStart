@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { pageService } from "@/services/page.service";
-import { pageBlockService } from "@/services/page-block.service";
-import { BlockRenderer } from "@/components/blocks/block-renderer";
+import { Render } from "@puckeditor/core";
+import { config } from "@/lib/puck";
 
 export default async function PublicChildPage({
   params,
@@ -15,12 +15,12 @@ export default async function PublicChildPage({
     notFound();
   }
 
-  const blocks = await pageBlockService.getTree(page.id);
+  const content = await pageService.getContent(page.id);
 
   return (
     <article className="prose prose-lg max-w-none">
       <h1>{page.title}</h1>
-      {blocks.length > 0 && <BlockRenderer blocks={blocks} />}
+      {content && <Render config={config} data={content} />}
     </article>
   );
 }

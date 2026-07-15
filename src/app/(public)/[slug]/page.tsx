@@ -3,8 +3,8 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { sectionService } from "@/services/section.service";
 import { pageService } from "@/services/page.service";
-import { pageBlockService } from "@/services/page-block.service";
-import { BlockRenderer } from "@/components/blocks/block-renderer";
+import { Render } from "@puckeditor/core";
+import { config } from "@/lib/puck";
 
 export default async function PublicSlugPage({
   params,
@@ -24,9 +24,9 @@ export default async function PublicSlugPage({
       ? await pageService.listBySection(section.id, { excludeSlug: "index" })
       : await pageService.listBySection(section.id);
 
-    const blocks = indexPage
-      ? await pageBlockService.getTree(indexPage.id)
-      : [];
+    const content = indexPage
+      ? await pageService.getContent(indexPage.id)
+      : null;
 
     return (
       <div>
@@ -35,7 +35,7 @@ export default async function PublicSlugPage({
           {section.description && !indexPage && (
             <p className="lead">{section.description}</p>
           )}
-          {blocks.length > 0 && <BlockRenderer blocks={blocks} />}
+          {content && <Render config={config} data={content} />}
         </article>
 
         {childPages.length > 0 && (
@@ -65,11 +65,11 @@ export default async function PublicSlugPage({
 
   const page = await pageService.getBySlug(slug);
   if (page && page.isPublished) {
-    const blocks = await pageBlockService.getTree(page.id);
+    const content = await pageService.getContent(page.id);
     return (
       <article className="prose prose-lg max-w-none">
         <h1>{page.title}</h1>
-        {blocks.length > 0 && <BlockRenderer blocks={blocks} />}
+        {content && <Render config={config} data={content} />}
       </article>
     );
   }
