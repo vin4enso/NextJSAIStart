@@ -1,15 +1,13 @@
-import type { PageBlock } from "@/schemas/page-block";
-
-type BlockWithChildren = PageBlock & { children?: PageBlock[] };
-
-interface FaqBlockProps {
-  block: BlockWithChildren;
+interface FaqItem {
+  question: string;
+  answer: string;
 }
 
-export function FaqBlock({ block }: FaqBlockProps) {
-  const config = block.config as Record<string, unknown>;
-  const items = config.items as
-    Array<{ question: string; answer: string }> | undefined;
+interface FaqBlockProps {
+  items: FaqItem[];
+}
+
+export function FaqBlock({ items }: FaqBlockProps) {
   return (
     <dl>
       {items?.map((item, i) => (

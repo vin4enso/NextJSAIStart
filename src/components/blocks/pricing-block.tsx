@@ -1,22 +1,18 @@
-import type { PageBlock } from "@/schemas/page-block";
-
-type BlockWithChildren = PageBlock & { children?: PageBlock[] };
-
-interface PricingBlockProps {
-  block: BlockWithChildren;
+interface PricingPlan {
+  name: string;
+  price: number;
+  currency?: string;
+  period?: string;
+  features: string;
+  ctaText?: string;
+  ctaUrl?: string;
 }
 
-export function PricingBlock({ block }: PricingBlockProps) {
-  const config = block.config as Record<string, unknown>;
-  const plans = config.plans as
-    | Array<{
-        name: string;
-        price: number;
-        currency?: string;
-        period?: string;
-        features?: string[];
-      }>
-    | undefined;
+interface PricingBlockProps {
+  plans: PricingPlan[];
+}
+
+export function PricingBlock({ plans }: PricingBlockProps) {
   return (
     <div className="grid grid-cols-3 gap-4">
       {plans?.map((plan, i) => (
@@ -27,13 +23,16 @@ export function PricingBlock({ block }: PricingBlockProps) {
             {plan.price}
             {plan.period ? `/${plan.period}` : ""}
           </p>
-          {plan.features && (
+          {plan.features ? (
             <ul>
-              {plan.features.map((f, j) => (
+              {plan.features.split("\n").map((f, j) => (
                 <li key={j}>{f}</li>
               ))}
             </ul>
-          )}
+          ) : null}
+          {plan.ctaText && plan.ctaUrl ? (
+            <a href={plan.ctaUrl}>{plan.ctaText}</a>
+          ) : null}
         </div>
       ))}
     </div>

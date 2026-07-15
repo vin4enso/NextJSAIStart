@@ -11,15 +11,16 @@ describe("BlockRenderer", () => {
             pageId: "p1",
             blockType: "heading",
             sortOrder: 0,
-            config: { text: "Hello World", level: 1, blockType: "heading" },
+            config: { text: "Hello World", level: 1, alignment: "center" },
             createdAt: "",
             updatedAt: "",
           },
         ]}
       />,
     );
-    expect(screen.getByText("Hello World")).toBeInTheDocument();
-    expect(screen.getByRole("heading", { level: 1 })).toBeInTheDocument();
+    const heading = screen.getByRole("heading", { level: 1 });
+    expect(heading).toHaveTextContent("Hello World");
+    expect(heading.className).toContain("text-center");
   });
 
   it("renders paragraph block with HTML", () => {
@@ -31,10 +32,7 @@ describe("BlockRenderer", () => {
             pageId: "p1",
             blockType: "paragraph",
             sortOrder: 0,
-            config: {
-              html: "<strong>Bold</strong> text",
-              blockType: "paragraph",
-            },
+            config: { html: "<strong>Bold</strong> text" },
             createdAt: "",
             updatedAt: "",
           },
@@ -54,11 +52,7 @@ describe("BlockRenderer", () => {
             pageId: "p1",
             blockType: "image",
             sortOrder: 0,
-            config: {
-              src: "/test.jpg",
-              alt: "Test image",
-              blockType: "image",
-            },
+            config: { src: "/test.jpg", alt: "Test image" },
             createdAt: "",
             updatedAt: "",
           },
@@ -79,7 +73,7 @@ describe("BlockRenderer", () => {
             pageId: "p1",
             blockType: "section",
             sortOrder: 0,
-            config: { title: "Section Title", blockType: "section" },
+            config: { title: "Section Title" },
             createdAt: "",
             updatedAt: "",
             children: [
@@ -88,11 +82,7 @@ describe("BlockRenderer", () => {
                 pageId: "p1",
                 blockType: "heading",
                 sortOrder: 0,
-                config: {
-                  text: "Child Heading",
-                  level: 2,
-                  blockType: "heading",
-                },
+                config: { text: "Child Heading", level: 2 },
                 createdAt: "",
                 updatedAt: "",
               },

@@ -1,15 +1,14 @@
-import type { PageBlock } from "@/schemas/page-block";
-
-type BlockWithChildren = PageBlock & { children?: PageBlock[] };
-
-interface GalleryBlockProps {
-  block: BlockWithChildren;
+interface GalleryImage {
+  src: string;
+  alt: string;
 }
 
-export function GalleryBlock({ block }: GalleryBlockProps) {
-  const config = block.config as Record<string, unknown>;
-  const images = config.images as
-    Array<{ src: string; alt: string }> | undefined;
+interface GalleryBlockProps {
+  images: GalleryImage[];
+  layout?: "grid" | "masonry" | "carousel";
+}
+
+export function GalleryBlock({ images }: GalleryBlockProps) {
   return (
     <div className="grid grid-cols-3 gap-2">
       {images?.map((img, i) => (

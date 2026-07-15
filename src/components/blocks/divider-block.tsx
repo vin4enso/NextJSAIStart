@@ -1,21 +1,16 @@
-import type { PageBlock } from "@/schemas/page-block";
-
-type BlockWithChildren = PageBlock & { children?: PageBlock[] };
-
 interface DividerBlockProps {
-  block: BlockWithChildren;
+  style?: "solid" | "dashed" | "dotted";
+  color?: string;
+  thickness?: number;
 }
 
-export function DividerBlock({ block }: DividerBlockProps) {
-  const config = block.config as Record<string, unknown>;
+export function DividerBlock({ style, color, thickness }: DividerBlockProps) {
   return (
     <hr
       style={{
-        borderStyle: (config.style as string) ?? "solid",
-        borderColor: (config.color as string) ?? undefined,
-        borderWidth: config.thickness
-          ? `${config.thickness as number}px`
-          : undefined,
+        borderStyle: style ?? "solid",
+        borderColor: color ?? undefined,
+        borderWidth: thickness ? `${thickness}px` : undefined,
       }}
     />
   );

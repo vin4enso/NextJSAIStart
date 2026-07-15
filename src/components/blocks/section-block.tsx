@@ -1,21 +1,17 @@
-import { BlockRenderer } from "./block-renderer";
-import type { PageBlock } from "@/schemas/page-block";
-
-type BlockWithChildren = PageBlock & { children?: PageBlock[] };
+import type { ReactNode } from "react";
 
 interface SectionBlockProps {
-  block: BlockWithChildren;
+  title?: string;
+  subtitle?: string;
+  children?: ReactNode;
 }
 
-export function SectionBlock({ block }: SectionBlockProps) {
-  const config = block.config as Record<string, unknown>;
+export function SectionBlock({ title, subtitle, children }: SectionBlockProps) {
   return (
     <section>
-      {config.title ? <h2>{config.title as string}</h2> : null}
-      {config.subtitle ? <p>{config.subtitle as string}</p> : null}
-      {block.children && block.children.length > 0 && (
-        <BlockRenderer blocks={block.children} />
-      )}
+      {title ? <h2>{title}</h2> : null}
+      {subtitle ? <p>{subtitle}</p> : null}
+      {children}
     </section>
   );
 }

@@ -1,19 +1,16 @@
-import type { PageBlock } from "@/schemas/page-block";
-
-type BlockWithChildren = PageBlock & { children?: PageBlock[] };
-
 interface VideoBlockProps {
-  block: BlockWithChildren;
+  url: string;
+  autoplay?: boolean;
+  controls?: boolean;
 }
 
-export function VideoBlock({ block }: VideoBlockProps) {
-  const config = block.config as Record<string, unknown>;
+export function VideoBlock({ url, controls }: VideoBlockProps) {
   return (
     <div>
       <iframe
-        src={config.url as string}
+        src={url}
         allow="autoplay; fullscreen"
-        allowFullScreen={!!config.controls}
+        allowFullScreen={!!controls}
         className="aspect-video w-full"
       />
     </div>
