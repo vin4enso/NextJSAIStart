@@ -217,29 +217,6 @@
     "en": "English"
   },
   "pageBlock": {
-    "blockEditor": {
-      "title": "Редактор блоков",
-      "addBlock": "Добавить блок",
-      "noBlocks": "Блоков пока нет. Нажмите \"Добавить блок\".",
-      "blockAdded": "Блок добавлен",
-      "failedToAddBlock": "Не удалось добавить блок",
-      "blockUpdated": "Блок обновлён",
-      "failedToUpdateBlock": "Не удалось обновить блок",
-      "blockDeleted": "Блок удалён",
-      "failedToDeleteBlock": "Не удалось удалить блок"
-    },
-    "blockPicker": {
-      "title": "Добавить блок",
-      "cancel": "Отмена"
-    },
-    "blockForm": {
-      "title": "Настройки блока",
-      "save": "Сохранить",
-      "cancel": "Отмена"
-    },
-    "blockCard": {
-      "fields": "поля"
-    },
     "heading": "Заголовок",
     "paragraph": "Параграф",
     "image": "Изображение",

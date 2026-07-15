@@ -14,7 +14,6 @@ import {
   type SQL,
 } from "drizzle-orm";
 import type { CreatePageDTO, UpdatePageDTO } from "@/schemas/page";
-import { pageBlockService } from "@/services/page-block.service";
 
 export const pageService = {
   async list(
@@ -183,12 +182,23 @@ export const pageService = {
     return this.getById(id);
   },
 
-  async getWithBlocks(id: string) {
-    const page = await this.getById(id);
-    if (!page) return null;
+  async getContent(id: string) {
+    const [row] = await db
+      .select({ content: pages.content })
+      .from(pages)
+      .where(and(eq(pages.id, id), isNull(pages.deletedAt)))
+      .limit(1);
+    if (!row) return null;
+    return row.content ? JSON.parse(row.content) : null;
+  },
 
-    const blocks = await pageBlockService.getTree(id);
-    return { ...page, blocks };
+  async saveContent(id: string, data: unknown) {
+    const now = new Date().toISOString();
+    db.update(pages)
+      .set({ content: JSON.stringify(data), updatedAt: now })
+      .where(eq(pages.id, id))
+      .run();
+    return this.getById(id);
   },
 
   async create(data: CreatePageDTO) {

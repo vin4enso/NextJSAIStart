@@ -3,7 +3,8 @@ import { pageService } from "@/services/page.service";
 import { requirePermission } from "@/lib/rbac";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
-import { BlockEditor } from "@/components/blocks/block-editor";
+import type { Data } from "@puckeditor/core";
+import { PuckEditor } from "./_components/puck-editor";
 
 export default async function PageEditorPage({
   params,
@@ -15,8 +16,12 @@ export default async function PageEditorPage({
   if (!session?.user) redirect("/");
   await requirePermission(session.user.id, "pages.update");
 
-  const page = await pageService.getWithBlocks(id);
+  const page = await pageService.getById(id);
   if (!page) redirect("/admin/pages");
 
-  return <BlockEditor pageId={id} initialBlocks={page.blocks ?? []} />;
+  const data: Data = page.content
+    ? JSON.parse(page.content)
+    : { content: [], root: { props: {} } };
+
+  return <PuckEditor pageId={id} initialData={data} pageTitle={page.title} />;
 }

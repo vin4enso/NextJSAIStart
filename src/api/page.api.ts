@@ -27,4 +27,7 @@ export const pageApi = {
   delete: (id: string) => apiClient.delete<void>(`/api/pages/${id}`),
 
   publish: (id: string) => apiClient.post<void>(`/api/pages/${id}/publish`),
+
+  saveContent: (id: string, data: unknown) =>
+    apiClient.post<void>(`/api/pages/${id}/content`, data),
 };

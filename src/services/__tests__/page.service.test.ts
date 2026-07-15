@@ -5,6 +5,16 @@ import { eq } from "drizzle-orm";
 import { pageService } from "@/services/page.service";
 import { sectionService } from "@/services/section.service";
 
+const mockPuckData = {
+  content: [
+    {
+      type: "HeadingBlock",
+      props: { id: "HeadingBlock-1", text: "Hello", level: 2 },
+    },
+  ],
+  root: { props: { title: "Test Page" } },
+};
+
 describe("pageService", () => {
   beforeAll(async () => {
     const { main } = await import("@/drizzle/seed");
@@ -340,6 +350,86 @@ describe("pageService", () => {
     it("returns false when root slug does not exist", async () => {
       const exists = await pageService.checkRootSlug("non-existent-root-slug");
       expect(exists).toBe(false);
+    });
+  });
+
+  describe("getContent", () => {
+    it("returns parsed Puck data from existing page", async () => {
+      const slug = `test-get-content-${Date.now()}`;
+      const page = await pageService.create({
+        title: "Content Page",
+        slug,
+        isPublished: true,
+      });
+      expect(page).not.toBeNull();
+
+      await pageService.saveContent(page!.id, mockPuckData);
+
+      const content = await pageService.getContent(page!.id);
+      expect(content).toEqual(mockPuckData);
+    });
+
+    it("returns null when page has no content", async () => {
+      const slug = `test-no-content-${Date.now()}`;
+      const page = await pageService.create({
+        title: "No Content",
+        slug,
+        isPublished: true,
+      });
+      expect(page).not.toBeNull();
+
+      const content = await pageService.getContent(page!.id);
+      expect(content).toBeNull();
+    });
+
+    it("returns null for non-existent page", async () => {
+      const content = await pageService.getContent("non-existent-id");
+      expect(content).toBeNull();
+    });
+  });
+
+  describe("saveContent", () => {
+    it("saves Puck data and returns the updated page", async () => {
+      const slug = `test-save-content-${Date.now()}`;
+      const page = await pageService.create({
+        title: "Save Content",
+        slug,
+        isPublished: true,
+      });
+      expect(page).not.toBeNull();
+
+      const updated = await pageService.saveContent(page!.id, mockPuckData);
+      expect(updated).not.toBeNull();
+      expect(updated!.id).toBe(page!.id);
+
+      const saved = await pageService.getContent(page!.id);
+      expect(saved).toEqual(mockPuckData);
+    });
+
+    it("overwrites existing content", async () => {
+      const slug = `test-overwrite-content-${Date.now()}`;
+      const page = await pageService.create({
+        title: "Overwrite",
+        slug,
+        isPublished: true,
+      });
+      expect(page).not.toBeNull();
+
+      const newData = {
+        content: [
+          {
+            type: "ParagraphBlock" as const,
+            props: { id: "pb-1", html: "<p>Updated</p>" },
+          },
+        ],
+        root: { props: {} },
+      };
+
+      await pageService.saveContent(page!.id, mockPuckData);
+      await pageService.saveContent(page!.id, newData);
+
+      const content = await pageService.getContent(page!.id);
+      expect(content).toEqual(newData);
     });
   });
 });
