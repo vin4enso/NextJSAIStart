@@ -217,29 +217,6 @@
     "en": "English"
   },
   "pageBlock": {
-    "blockEditor": {
-      "title": "Page Editor",
-      "addBlock": "Add Block",
-      "noBlocks": "No blocks yet. Click \"Add Block\" to start.",
-      "blockAdded": "Block added",
-      "failedToAddBlock": "Failed to add block",
-      "blockUpdated": "Block updated",
-      "failedToUpdateBlock": "Failed to update block",
-      "blockDeleted": "Block deleted",
-      "failedToDeleteBlock": "Failed to delete block"
-    },
-    "blockPicker": {
-      "title": "Add Block",
-      "cancel": "Cancel"
-    },
-    "blockForm": {
-      "title": "Block Config",
-      "save": "Save",
-      "cancel": "Cancel"
-    },
-    "blockCard": {
-      "fields": "fields"
-    },
     "heading": "Heading",
     "paragraph": "Paragraph",
     "image": "Image",
