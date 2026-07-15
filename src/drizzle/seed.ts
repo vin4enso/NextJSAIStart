@@ -172,14 +172,48 @@ async function main() {
   console.log("Admin user assigned System role");
 
   const homePageId = randomUUID();
+  const homeSectionId = randomUUID();
+  const homeHeadingId = randomUUID();
+  const homeParagraphId = randomUUID();
   db.insert(pages)
     .values({
       id: homePageId,
       sectionId: null,
       title: "Home",
       slug: "home",
-      content:
-        "<h2>Welcome!</h2><p>This is your home page. Edit it in the admin panel.</p>",
+      content: JSON.stringify({
+        root: { props: { id: homePageId } },
+        content: [
+          {
+            type: "SectionBlock",
+            props: { id: homeSectionId, title: "Welcome" },
+            children: [
+              {
+                zone: "content",
+                content: [
+                  {
+                    type: "HeadingBlock",
+                    props: {
+                      id: homeHeadingId,
+                      text: "Welcome!",
+                      level: 2,
+                      alignment: "left",
+                    },
+                  },
+                  {
+                    type: "ParagraphBlock",
+                    props: {
+                      id: homeParagraphId,
+                      html: "This is your home page. Edit it in the admin panel.",
+                      alignment: "left",
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      }),
       isPublished: true,
       isHome: true,
       publishedAt: now,
@@ -208,13 +242,38 @@ async function main() {
   console.log("Sample section created");
 
   const sampleIndexPageId = randomUUID();
+  const aboutSectionId = randomUUID();
+  const aboutParagraphId = randomUUID();
   db.insert(pages)
     .values({
       id: sampleIndexPageId,
       sectionId: sampleSectionId,
       title: "About",
       slug: "index",
-      content: "<h2>About Us</h2><p>Sample about page content.</p>",
+      content: JSON.stringify({
+        root: { props: { id: sampleIndexPageId } },
+        content: [
+          {
+            type: "SectionBlock",
+            props: { id: aboutSectionId, title: "About Us" },
+            children: [
+              {
+                zone: "content",
+                content: [
+                  {
+                    type: "ParagraphBlock",
+                    props: {
+                      id: aboutParagraphId,
+                      html: "Sample about page content.",
+                      alignment: "left",
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      }),
       isPublished: true,
       isHome: false,
       publishedAt: now,
@@ -226,13 +285,38 @@ async function main() {
   console.log("Sample index page created");
 
   const samplePageId = randomUUID();
+  const teamSectionId = randomUUID();
+  const teamParagraphId = randomUUID();
   db.insert(pages)
     .values({
       id: samplePageId,
       sectionId: sampleSectionId,
       title: "Team",
       slug: "team",
-      content: "<h3>Our Team</h3><p>Meet the team page content.</p>",
+      content: JSON.stringify({
+        root: { props: { id: samplePageId } },
+        content: [
+          {
+            type: "SectionBlock",
+            props: { id: teamSectionId, title: "Our Team" },
+            children: [
+              {
+                zone: "content",
+                content: [
+                  {
+                    type: "ParagraphBlock",
+                    props: {
+                      id: teamParagraphId,
+                      html: "Meet the team page content.",
+                      alignment: "left",
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      }),
       isPublished: true,
       isHome: false,
       publishedAt: now,
