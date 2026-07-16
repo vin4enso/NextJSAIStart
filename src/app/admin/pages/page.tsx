@@ -147,7 +147,7 @@ export default function PagesPage() {
       accessorKey: "title",
       header: t("name"),
       cell: ({ row }) => (
-        <span className="font-medium">
+        <span className="font-medium" data-testid="page-title">
           {row.original.title}
           {row.original.isHome && (
             <Badge variant="default" className="ml-2">
@@ -170,7 +170,10 @@ export default function PagesPage() {
           ? `/${row.original.sectionSlug}/`
           : "/";
         return (
-          <code className="bg-muted rounded px-1.5 py-0.5 text-xs">
+          <code
+            className="bg-muted rounded px-1.5 py-0.5 text-xs"
+            data-testid="page-slug"
+          >
             {prefix}
             {row.original.slug}
           </code>
@@ -205,7 +208,11 @@ export default function PagesPage() {
           <DropdownMenu>
             <DropdownMenuTrigger
               render={
-                <Button variant="ghost" size="icon-sm">
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  data-testid="page-actions-trigger"
+                >
                   <MoreHorizontal className="size-4" />
                 </Button>
               }
@@ -221,7 +228,10 @@ export default function PagesPage() {
               >
                 {tCommon("preview")}
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleEdit(p)}>
+              <DropdownMenuItem
+                onClick={() => handleEdit(p)}
+                data-testid="page-action-edit"
+              >
                 {tCommon("edit")}
               </DropdownMenuItem>
               <DropdownMenuItem
@@ -248,6 +258,7 @@ export default function PagesPage() {
                 <DropdownMenuItem
                   variant="destructive"
                   onClick={() => setDeleteTarget(p)}
+                  data-testid="page-action-delete"
                 >
                   {tCommon("delete")}
                 </DropdownMenuItem>
@@ -284,7 +295,7 @@ export default function PagesPage() {
         title={pageMeta.title}
         description={pageMeta.description}
         actions={
-          <Button onClick={handleCreate}>
+          <Button onClick={handleCreate} data-testid="page-create-btn">
             <Plus className="size-4" />
             {t("create")}
           </Button>

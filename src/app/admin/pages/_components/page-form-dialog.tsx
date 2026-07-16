@@ -169,7 +169,11 @@ export function PageFormDialog({
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="title">{t("name")}</Label>
-                <Input id="title" {...form.register("title")} />
+                <Input
+                  id="title"
+                  data-testid="page-form-title"
+                  {...form.register("title")}
+                />
                 {form.formState.errors.title && (
                   <p className="text-destructive text-xs">
                     {tErrors("required")}
@@ -180,6 +184,7 @@ export function PageFormDialog({
                 <Label htmlFor="slug">{t("slug")}</Label>
                 <Input
                   id="slug"
+                  data-testid="page-form-slug"
                   {...form.register("slug")}
                   onChange={handleSlugChange}
                   disabled={isIndexPage}
@@ -199,6 +204,7 @@ export function PageFormDialog({
               <Label htmlFor="sectionId">{t("section")}</Label>
               <select
                 id="sectionId"
+                data-testid="page-form-section"
                 className="border-border bg-background w-full rounded-lg border px-3 py-2 text-sm"
                 {...form.register("sectionId")}
               >
@@ -213,12 +219,17 @@ export function PageFormDialog({
 
             <div className="space-y-2">
               <Label htmlFor="metaTitle">{t("metaTitle")}</Label>
-              <Input id="metaTitle" {...form.register("metaTitle")} />
+              <Input
+                id="metaTitle"
+                data-testid="page-form-meta-title"
+                {...form.register("metaTitle")}
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="metaDescription">{t("metaDescription")}</Label>
               <Input
                 id="metaDescription"
+                data-testid="page-form-meta-description"
                 {...form.register("metaDescription")}
               />
             </div>
@@ -228,6 +239,7 @@ export function PageFormDialog({
                 <input
                   id="isPublished"
                   type="checkbox"
+                  data-testid="page-form-is-published"
                   {...form.register("isPublished")}
                   className="border-input rounded"
                 />
@@ -237,6 +249,7 @@ export function PageFormDialog({
                 <input
                   id="isHome"
                   type="checkbox"
+                  data-testid="page-form-is-home"
                   {...form.register("isHome")}
                   className="border-input rounded"
                   disabled={isHomeDisabled}
@@ -251,10 +264,15 @@ export function PageFormDialog({
               type="button"
               onClick={() => onOpenChange(false)}
               disabled={submitting}
+              data-testid="page-form-cancel"
             >
               {tCommon("cancel")}
             </Button>
-            <Button type="submit" disabled={submitting}>
+            <Button
+              type="submit"
+              disabled={submitting}
+              data-testid="page-form-submit"
+            >
               {submitting ? <Loader2 className="size-4 animate-spin" /> : null}
               {submitting ? tCommon("loading") : tCommon("save")}
             </Button>

@@ -38,13 +38,19 @@ export function ConfirmDelete({
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button variant="outline" onClick={onCancel} disabled={isLoading}>
+          <Button
+            variant="outline"
+            onClick={onCancel}
+            disabled={isLoading}
+            data-testid="confirm-cancel"
+          >
             {t("cancel")}
           </Button>
           <Button
             variant="destructive"
             onClick={onConfirm}
             disabled={isLoading}
+            data-testid="confirm-delete"
           >
             {t("delete")}
           </Button>
