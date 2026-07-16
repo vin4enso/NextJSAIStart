@@ -27,9 +27,9 @@ export async function createPageViaApi(
 
 export async function fillPageForm(page: Page, data: Partial<CreatePageData>) {
   if (data.title) {
-    await page.getByLabel(/^(title|name|название)$/i).fill(data.title);
+    await page.getByTestId("page-form-title").fill(data.title);
   }
   if (data.slug) {
-    await page.getByLabel(/^slug$/i).fill(data.slug);
+    await page.getByTestId("page-form-slug").fill(data.slug);
   }
 }

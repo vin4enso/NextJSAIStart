@@ -6,30 +6,28 @@ const NEW_PAGE = {
   slug: `e2e-page-${Date.now()}`,
 };
 
-function actionsButton(row: any) {
-  return row.locator("button").last();
-}
-
 test.describe("Pages CRUD", () => {
   test("table renders with seeded pages", async ({ adminPage }) => {
     await adminPage.goto("/admin/pages");
     await expect(adminPage.getByText(/pages|страницы/i)).toBeVisible();
-    await expect(adminPage.getByText("Home")).toBeVisible();
+    await expect(
+      adminPage.getByTestId("page-title").filter({ hasText: "Home" }),
+    ).toBeVisible();
   });
 
   test("can create a page", async ({ adminPage }) => {
     await adminPage.goto("/admin/pages");
 
-    await adminPage
-      .getByRole("button", { name: /create page|создать страницу/i })
-      .click();
+    await adminPage.getByTestId("page-create-btn").click();
 
     await adminPage.waitForSelector("role=dialog");
     await fillPageForm(adminPage, NEW_PAGE);
 
-    await adminPage.getByRole("button", { name: /save|сохранить/i }).click();
+    await adminPage.getByTestId("page-form-submit").click();
 
-    await expect(adminPage.getByText(NEW_PAGE.title)).toBeVisible();
+    await expect(
+      adminPage.getByTestId("page-title").filter({ hasText: NEW_PAGE.title }),
+    ).toBeVisible();
   });
 
   test("can edit a page", async ({ adminPage }) => {
@@ -42,20 +40,23 @@ test.describe("Pages CRUD", () => {
 
     await adminPage.goto("/admin/pages");
 
-    const pageRow = adminPage.getByText(pageName).locator("xpath=../..");
-    await actionsButton(pageRow).click();
-    await adminPage
-      .getByRole("menuitem", { name: /edit|редактировать/i })
-      .click();
+    const pageRow = adminPage
+      .getByTestId("page-title")
+      .filter({ hasText: pageName })
+      .locator("xpath=../..");
+    await pageRow.getByTestId("page-actions-trigger").click();
+    await adminPage.getByTestId("page-action-edit").click();
 
     await adminPage.waitForSelector("role=dialog");
-    const nameInput = adminPage.getByLabel(/^(title|название)$/i);
+    const nameInput = adminPage.getByTestId("page-form-title");
     await nameInput.clear();
     await nameInput.fill("Updated Page");
 
-    await adminPage.getByRole("button", { name: /save|сохранить/i }).click();
+    await adminPage.getByTestId("page-form-submit").click();
 
-    await expect(adminPage.getByText("Updated Page")).toBeVisible();
+    await expect(
+      adminPage.getByTestId("page-title").filter({ hasText: "Updated Page" }),
+    ).toBeVisible();
   });
 
   test("can delete a non-home page", async ({ adminPage }) => {
@@ -65,26 +66,29 @@ test.describe("Pages CRUD", () => {
 
     await adminPage.goto("/admin/pages");
 
-    const pageRow = adminPage.getByText(pageName).locator("xpath=../..");
-    await actionsButton(pageRow).click();
-    await adminPage.getByRole("menuitem", { name: /delete|удалить/i }).click();
+    const pageRow = adminPage
+      .getByTestId("page-title")
+      .filter({ hasText: pageName })
+      .locator("xpath=../..");
+    await pageRow.getByTestId("page-actions-trigger").click();
+    await adminPage.getByTestId("page-action-delete").click();
 
-    await adminPage
-      .getByRole("button", { name: /confirm|подтвердить/i })
-      .click();
+    await adminPage.getByTestId("confirm-delete").click();
 
-    await expect(adminPage.getByText(pageName)).not.toBeVisible();
+    await expect(
+      adminPage.getByTestId("page-title").filter({ hasText: pageName }),
+    ).not.toBeVisible();
   });
 
   test("cannot delete Home page", async ({ adminPage }) => {
     await adminPage.goto("/admin/pages");
 
-    const homeRow = adminPage.getByText("Home").locator("xpath=../..");
-    await actionsButton(homeRow).click();
+    const homeRow = adminPage
+      .getByTestId("page-title")
+      .filter({ hasText: "Home" })
+      .locator("xpath=../..");
+    await homeRow.getByTestId("page-actions-trigger").click();
 
-    const deleteItem = adminPage.getByRole("menuitem", {
-      name: /delete|удалить/i,
-    });
-    await expect(deleteItem).toBeDisabled();
+    await expect(adminPage.getByTestId("page-action-delete")).toHaveCount(0);
   });
 });
